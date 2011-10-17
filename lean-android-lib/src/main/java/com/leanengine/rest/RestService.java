@@ -46,11 +46,11 @@ public class RestService {
     public static void getPrivateEntitiesAsync(final NetworkCallback<LeanEntity> networkCallback) {
         if (LeanEngine.getLoginData() == null) networkCallback.onFailure(new RestException(0, "User not logged in"));
 
-        RestAsyncTask<List<LeanEntity>> aTask = new RestAsyncTask<List<LeanEntity>>(networkCallback) {
+        RestAsyncTask<LeanEntity[]> aTask = new RestAsyncTask<LeanEntity[]>(networkCallback) {
 
             // executes on background thread
             @Override
-            protected List<LeanEntity> doInBackground(Void... lists) {
+            protected LeanEntity[] doInBackground(Void... lists) {
                 //todo externalize URLs (and token insertion)
                 String url = LeanEngine.getHost() +
                         "/rest/entity?lean_token=" +
@@ -68,7 +68,7 @@ public class RestService {
 
             // executes on UI thread
             @Override
-            protected void onPostExecute(List<LeanEntity> leanEntities) {
+            protected void onPostExecute(LeanEntity[] leanEntities) {
                 if (error != null) {
                     networkCallback.onFailure(error);
                     return;
@@ -183,12 +183,12 @@ public class RestService {
         return entity;
     }
 
-    private static List<LeanEntity> fromJsonArray(JSONObject json) throws JSONException {
+    private static LeanEntity[] fromJsonArray(JSONObject json) throws JSONException {
         JSONArray array = json.getJSONArray("list");
-        List<LeanEntity> result = new ArrayList<LeanEntity>(array.length());
+        LeanEntity[] result = new LeanEntity[array.length()];
         for (int i = 0; i < array.length(); i++) {
             JSONObject item = array.getJSONObject(i);
-            result.add(fromJsonObject(item));
+            result[i] = fromJsonObject(item);
         }
         return result;
     }

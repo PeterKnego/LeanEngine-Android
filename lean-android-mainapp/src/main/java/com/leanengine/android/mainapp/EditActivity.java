@@ -57,12 +57,7 @@ public class EditActivity extends Activity {
                 
                 RestService.putPrivateEntity(entity, new NetworkCallback<Long>() {
                     @Override
-                    public void onResult(List<Long> result) {
-                       // nothing to do
-                    }
-
-                    @Override
-                    public void onResult(Long result) {
+                    public void onResult(Long... result) {
                         Toast.makeText(EditActivity.this, "Entity saved.", 2000).show();
                         entityName.getText().clear();
                         key1.getText().clear();

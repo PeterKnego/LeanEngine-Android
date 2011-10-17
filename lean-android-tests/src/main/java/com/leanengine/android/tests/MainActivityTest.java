@@ -2,18 +2,19 @@ package com.leanengine.android.tests;
 
 import android.test.ActivityInstrumentationTestCase2;
 import com.jayway.android.robotium.solo.Solo;
+import com.leanengine.android.mainapp.MainTabWidget;
 
 /**
- * Tests that {@link MainActivity} displays correct data from its libraries.
+ * Tests that {@link MainTabWidget} displays correct data from its libraries.
  *
  * @author hugo.josefson@jayway.com
  */
-public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
+public class MainActivityTest extends ActivityInstrumentationTestCase2<MainTabWidget> {
 
     private Solo robotium;
 
     public MainActivityTest() {
-        super("com.jayway.maven.plugins.android.generation2.samples.libraryprojects.mainapp", MainActivity.class);
+        super("com.jayway.maven.plugins.android.generation2.samples.libraryprojects.mainapp", MainTabWidget.class);
     }
 
     @Override

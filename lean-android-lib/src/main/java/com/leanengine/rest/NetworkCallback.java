@@ -5,9 +5,7 @@ import java.util.List;
 
 public interface NetworkCallback<T> {
 
-    public void onResult(List<T> result);
-
-    public void onResult(T result);
+    public void onResult(T... result);
 
     public void onFailure(RestException restException);
 }

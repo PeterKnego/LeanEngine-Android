@@ -3,7 +3,6 @@ package com.leanengine.android.mainapp;
 import android.app.ListActivity;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import com.leanengine.rest.RestService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -48,8 +46,8 @@ public class ViewActivity extends ListActivity {
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                        ViewActivity.this.getListView()
-                        .setAdapter(new MyCustomBaseAdapter(ViewActivity.this, new ArrayList<LeanEntity>(0)));
+                ViewActivity.this.getListView()
+                        .setAdapter(new MyCustomBaseAdapter(ViewActivity.this, new LeanEntity[0]));
                 loadEntities();
             }
         });
@@ -57,17 +55,11 @@ public class ViewActivity extends ListActivity {
 
     private void loadEntities() {
         RestService.getPrivateEntitiesAsync(new NetworkCallback<LeanEntity>() {
-            @Override
-            public void onResult(List<LeanEntity> result) {
-                ViewActivity.this.getListView()
-                        .setAdapter(new MyCustomBaseAdapter(ViewActivity.this, result));
-                ViewActivity.this.getListView().setTextFilterEnabled(true);
-            }
 
             @Override
-            public void onResult(LeanEntity result) {
-                // do nothing here - we load a List of entities
-                Log.e("SOMETHING", "MORE");
+            public void onResult(LeanEntity... result) {
+                ViewActivity.this.getListView().setAdapter(new MyCustomBaseAdapter(ViewActivity.this, result));
+                ViewActivity.this.getListView().setTextFilterEnabled(true);
             }
 
             @Override
@@ -102,20 +94,20 @@ public class ViewActivity extends ListActivity {
     }
 
     private static class MyCustomBaseAdapter extends BaseAdapter {
-        private static List<LeanEntity> entities;
+        private static LeanEntity[] entities;
         private LayoutInflater mInflater;
 
-        private MyCustomBaseAdapter(Context context, List<LeanEntity> results) {
+        private MyCustomBaseAdapter(Context context, LeanEntity... results) {
             entities = results;
             mInflater = LayoutInflater.from(context);
         }
 
         public int getCount() {
-            return entities.size();
+            return entities.length;
         }
 
         public Object getItem(int i) {
-            return entities.get(i);
+            return entities[i];
         }
 
         public long getItemId(int i) {
@@ -134,8 +126,8 @@ public class ViewActivity extends ListActivity {
                 holder = (ViewHolder) view.getTag();
             }
 
-            holder.txtName.setText(entities.get(i).kind);
-            holder.txtProperties.setText(getPropertiesString(entities.get(i)));
+            holder.txtName.setText(entities[i].kind);
+            holder.txtProperties.setText(getPropertiesString(entities[i]));
 
             return view;
         }
