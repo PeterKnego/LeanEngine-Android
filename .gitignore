@@ -1,8 +1,11 @@
 .idea/
+*.iml
+*.ipr
+*.iws
 */*.iml
 */*.ipr
 */*.iws
- lean-android-lib/target/
- lean-android-mainapp/target/
- lean-android-tests/target/
+lean-android-lib/target/
+lean-android-mainapp/target/
+lean-android-tests/target/
 .DS_Store
