@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
+
+    <LinearLayout android:orientation="horizontal"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content">
+
+        <TextView android:id="@+id/entityLabel"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="Entity name: "/>
+
+        <EditText android:id="@+id/entityName"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:nextFocusUp="@+id/propertyValue3"
+                  android:nextFocusLeft="@+id/propertyValue3"
+                  android:nextFocusRight="@+id/propertyKey1"
+                  android:nextFocusDown="@+id/propertyKey1"
+                  android:singleLine="true"/>
+    </LinearLayout>
+
+    <View android:layout_height="1dip"
+          android:layout_width="fill_parent"
+          android:background="@android:color/background_light"
+          android:layout_marginTop="5dip"
+          android:layout_marginBottom="5dip"/>
+
+    <LinearLayout android:orientation="horizontal"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content">
+
+        <TextView android:layout_width="0dip"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:layout_margin="5dip"
+                  android:singleLine="true"
+                  android:text="Property"/>
+
+        <TextView android:layout_width="0dip"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:layout_margin="5dip"
+                  android:singleLine="true"
+                  android:text="Value "/>
+    </LinearLayout>
+
+    <LinearLayout android:orientation="horizontal"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content">
+
+        <EditText android:id="@+id/propertyKey1"
+                  android:layout_width="0dip"
+                  android:layout_height="wrap_content"
+                  android:layout_margin="5dip"
+                  android:singleLine="true"
+                  android:nextFocusUp="@+id/entityName"
+                  android:nextFocusLeft="@+id/entityName"
+                  android:nextFocusRight="@+id/propertyValue1"
+                  android:nextFocusDown="@+id/propertyValue1"
+                  android:layout_weight="1"/>
+
+        <EditText android:id="@+id/propertyValue1"
+                  android:layout_width="0dip"
+                  android:layout_height="wrap_content"
+                  android:layout_margin="5dip"
+                  android:singleLine="true"
+                  android:nextFocusUp="@+id/entityKey1"
+                  android:nextFocusLeft="@+id/entityKey1"
+                  android:nextFocusRight="@+id/propertyKey2"
+                  android:nextFocusDown="@+id/propertyKey2"
+                  android:layout_weight="1"/>
+    </LinearLayout>
+
+    <LinearLayout android:orientation="horizontal"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content">
+
+        <EditText android:id="@+id/propertyKey2"
+                  android:layout_width="0dip"
+                  android:layout_height="wrap_content"
+                  android:layout_margin="5dip"
+                  android:singleLine="true"
+                  android:nextFocusUp="@+id/entityValue1"
+                  android:nextFocusLeft="@+id/entityValue1"
+                  android:nextFocusRight="@+id/propertyValue2"
+                  android:nextFocusDown="@+id/propertyValue2"
+                  android:layout_weight="1"/>
+
+        <EditText android:id="@+id/propertyValue2"
+                  android:layout_width="0dip"
+                  android:layout_height="wrap_content"
+                  android:layout_margin="5dip"
+                  android:singleLine="true"
+                  android:nextFocusUp="@+id/entityKey2"
+                  android:nextFocusLeft="@+id/entityKey2"
+                  android:nextFocusRight="@+id/propertyKey3"
+                  android:nextFocusDown="@+id/propertyKey3"
+
+                  android:layout_weight="1"/>
+    </LinearLayout>
+
+    <LinearLayout android:orientation="horizontal"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content">
+
+        <EditText android:id="@+id/propertyKey3"
+                  android:layout_width="0dip"
+                  android:layout_height="wrap_content"
+                  android:layout_margin="5dip"
+                  android:singleLine="true"
+                  android:nextFocusUp="@+id/entityValue2"
+                  android:nextFocusLeft="@+id/entityValue2"
+                  android:nextFocusRight="@+id/propertyValue3"
+                  android:nextFocusDown="@+id/propertyValue3"
+                  android:layout_weight="1"/>
+
+        <EditText android:id="@+id/propertyValue3"
+                  android:layout_width="0dip"
+                  android:layout_height="wrap_content"
+                  android:layout_margin="5dip"
+                  android:singleLine="true"
+                  android:nextFocusUp="@+id/entityKey3"
+                  android:nextFocusLeft="@+id/entityKey3"
+                  android:nextFocusRight="@+id/entityName"
+                  android:nextFocusDown="@+id/entityName"
+                  android:layout_weight="1"/>
+    </LinearLayout>
+
+    <RelativeLayout android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+        <Button android:id="@+id/saveButton"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_margin="5dip"
+                android:text="Save to cloud"/>
+    </RelativeLayout>
+
+</LinearLayout>
