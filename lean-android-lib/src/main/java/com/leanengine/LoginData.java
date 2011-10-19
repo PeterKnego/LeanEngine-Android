@@ -12,12 +12,15 @@ public class LoginData {
     private int errorCode = 0;
     private String errorMessage;
 
+    public LoginData(String authToken) {
+        this.authToken = authToken;
+    }
+
     public static LoginData parse(Uri data) {
         if (data == null) return null;
 
-        LoginData loginData = new LoginData();
+        LoginData loginData = new LoginData(data.getQueryParameter("auth_token"));
         loginData.host = data.getHost();
-        loginData.authToken = data.getQueryParameter("auth_token");
 
         if (data.getQueryParameter("errorcode") != null)
             loginData.errorCode = Integer.parseInt(data.getQueryParameter("errorcode"));

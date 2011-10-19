@@ -14,7 +14,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainTabWi
     private Solo robotium;
 
     public MainActivityTest() {
-        super("com.jayway.maven.plugins.android.generation2.samples.libraryprojects.mainapp", MainTabWidget.class);
+        super("com.leanengine.android.mainapp", MainTabWidget.class);
     }
 
     @Override

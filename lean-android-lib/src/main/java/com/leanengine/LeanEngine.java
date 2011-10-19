@@ -42,6 +42,10 @@ public class LeanEngine {
         return null;
     }
 
+    public static void setAuthData(String authToken){
+         if(authToken!=null)
+           loginData = new LoginData(authToken);
+    }
 
     /**
      * Returns the Uri of the host, as initialized via {@link LeanEngine#init(Context, String)}

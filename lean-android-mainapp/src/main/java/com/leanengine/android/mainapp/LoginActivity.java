@@ -1,12 +1,20 @@
 package com.leanengine.android.mainapp;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import com.leanengine.FbDialog;
 import com.leanengine.LeanAccount;
+import com.leanengine.LeanEngine;
+import com.leanengine.LoginListener;
+import com.leanengine.rest.RestException;
 
 public class LoginActivity extends Activity {
+
+
     /**
      * Called when the activity is first created.
      */
@@ -28,8 +36,31 @@ public class LoginActivity extends Activity {
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-//
-                LeanAccount.loginFacebookInBrowser();
+
+                Uri loginUri = LeanEngine.getFacebookLoginUri();
+
+                FbDialog fbDialog = new FbDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
+                    @Override
+                    public void onSuccess(String token) {
+                        Log.d("FbDialog", "success!");
+                        LeanEngine.setAuthData(token);
+                        checkLogin(loginButton, logoutButton, tabHost);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Log.d("FbDialog", "cancelled");
+                        checkLogin(loginButton, logoutButton, tabHost);
+                    }
+
+                    @Override
+                    public void onError(RestException exception) {
+                        Log.d("FbDialog", "Error: " + exception.getMessage());
+                        checkLogin(loginButton, logoutButton, tabHost);
+                    }
+                });
+
+                fbDialog.show();
             }
         });
 
@@ -42,9 +73,16 @@ public class LoginActivity extends Activity {
                 tabHost.getTabWidget().getChildTabViewAt(2).setVisibility(View.INVISIBLE);
 
                 LeanAccount.logout();
+                checkLogin(loginButton, logoutButton, tabHost);
+
             }
         });
 
+        checkLogin(loginButton, logoutButton, tabHost);
+
+    }
+
+    private void checkLogin(View loginButton, View logoutButton, MainTabWidget tabHost) {
         if (LeanAccount.isLoggedIn()) {
             loginButton.setVisibility(View.INVISIBLE);
             logoutButton.setVisibility(View.VISIBLE);
