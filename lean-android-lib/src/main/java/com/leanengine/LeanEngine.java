@@ -11,7 +11,6 @@ public class LeanEngine {
     private static Context appContext;
     private static LoginData loginData;
 
-
     /**
      * Initializes the LeanEngine client.
      *

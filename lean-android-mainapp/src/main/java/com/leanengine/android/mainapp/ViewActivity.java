@@ -9,11 +9,11 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.leanengine.LeanEntity;
 import com.leanengine.LeanError;
-import com.leanengine.rest.NetworkCallback;
-import com.leanengine.rest.RestService;
+import com.leanengine.NetworkCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 
@@ -54,7 +54,7 @@ public class ViewActivity extends ListActivity {
     }
 
     private void loadEntities() {
-        RestService.getPrivateEntitiesAsync(new NetworkCallback<LeanEntity>() {
+        LeanEntity.getAllEntitiesInBackground(null, new NetworkCallback<LeanEntity>() {
 
             @Override
             public void onResult(LeanEntity... result) {
@@ -68,29 +68,6 @@ public class ViewActivity extends ListActivity {
             }
         });
 
-    }
-
-    private ArrayList<FakeEntity> getFakeEntities() {
-        ArrayList<FakeEntity> fakeEntities = new ArrayList<FakeEntity>();
-
-        Map<String, Object> fakePropertValueMap1 = new HashMap<String, Object>();
-        fakePropertValueMap1.put("fist_name", "Austin");
-        fakePropertValueMap1.put("last_name", "Powers");
-        fakePropertValueMap1.put("age", 40);
-        fakeEntities.add(new FakeEntity("Person", fakePropertValueMap1));
-
-        Map<String, Object> fakePropertValueMap2 = new HashMap<String, Object>();
-        fakePropertValueMap2.put("fist_name", "Scott");
-        fakePropertValueMap2.put("last_name", "Evil");
-        fakePropertValueMap2.put("age", 16);
-        fakeEntities.add(new FakeEntity("Person", fakePropertValueMap2));
-
-        Map<String, Object> fakePropertValueMap3 = new HashMap<String, Object>();
-        fakePropertValueMap3.put("fist_name", "Vanessa");
-        fakePropertValueMap3.put("last_name", "Kensington");
-        fakePropertValueMap3.put("age", 27);
-        fakeEntities.add(new FakeEntity("Person", fakePropertValueMap3));
-        return fakeEntities;
     }
 
     private static class MyCustomBaseAdapter extends BaseAdapter {
@@ -126,21 +103,23 @@ public class ViewActivity extends ListActivity {
                 holder = (ViewHolder) view.getTag();
             }
 
-            holder.txtName.setText(entities[i].kind);
+            holder.txtName.setText(entities[i].getKind());
             holder.txtProperties.setText(getPropertiesString(entities[i]));
 
             return view;
         }
 
         private String getPropertiesString(LeanEntity entity) {
-            if (entity.properties.isEmpty()) {
+            if (entity.getPropertiesIterator() == null) {
                 return "";
             } else {
                 StringBuilder builder = new StringBuilder();
-
-                for (Map.Entry<String, Object> entry : entity.properties.entrySet()) {
-                    builder.append(entry.getKey()).append(": ").append(entry.getValue().toString()).append(" | ");
+                Iterator<Map.Entry<String, Object>> iterator = entity.getPropertiesIterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, Object> next = iterator.next();
+                    builder.append(next.getKey()).append(": ").append(next.getValue().toString()).append(" | ");
                 }
+
                 return builder.substring(0, builder.length() - 2);
             }
         }

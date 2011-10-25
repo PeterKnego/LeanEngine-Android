@@ -17,6 +17,8 @@ public class LeanError {
         NoAccountAuthorized(107, "No account authorized to access server."),
         ServerNotAccessible(108, "Server is not accessible."),
         ReplyNotJSON(109, "Server reply is not a valid JSON."),
+        RestTaskExecutionError(110, "REST background task execution error."),
+        RestTaskInterrupted(111, "REST background task was interrupted"),
 
         // server errors have codes below 100
         // they happen when server has problems fulfilling request
