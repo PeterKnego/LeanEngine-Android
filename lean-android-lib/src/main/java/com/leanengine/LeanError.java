@@ -14,6 +14,9 @@ public class LeanError {
         EntityNotFound(104, "Entity not found."),
         EntityToJSON(105, "Entity missing "),
         LeanExceptionToJSON(106, "Error parsing error JSON data."),
+        NoAccountAuthorized(107, "No account authorized to access server."),
+        ServerNotAccessible(108, "Server is not accessible."),
+        ReplyNotJSON(109, "Server reply is not a valid JSON."),
 
         // server errors have codes below 100
         // they happen when server has problems fulfilling request
@@ -44,7 +47,7 @@ public class LeanError {
     private int errorCode;
     private String errorMessage;
 
-    public LeanError(int errorCode, String errorMessage) {
+    private LeanError(int errorCode, String errorMessage) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }
@@ -54,13 +57,26 @@ public class LeanError {
         this.errorMessage = error.errorMessage;
     }
 
+    public LeanError(Error error, String additionalMessage) {
+            this.errorCode = error.errorCode;
+            this.errorMessage = error.errorMessage + additionalMessage;
+        }
 
     public int getErrorCode() {
         return errorCode;
     }
 
-    public static LeanError fromJSON(String jsonString) throws JSONException {
-        JSONObject json = new JSONObject(jsonString);
-        return new LeanError(json.getInt("code"), json.getString("message"));
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public static LeanError fromJSON(String jsonString) {
+        JSONObject json = null;
+        try {
+            json = new JSONObject(jsonString);
+            return new LeanError(json.getInt("code"), json.getString("message"));
+        } catch (JSONException e) {
+            return new LeanError(Error.LeanExceptionToJSON);
+        }
     }
 }

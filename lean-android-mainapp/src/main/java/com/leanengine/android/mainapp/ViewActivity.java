@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.leanengine.LeanEntity;
+import com.leanengine.LeanError;
 import com.leanengine.rest.NetworkCallback;
-import com.leanengine.rest.RestException;
 import com.leanengine.rest.RestService;
 
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ public class ViewActivity extends ListActivity {
             }
 
             @Override
-            public void onFailure(final RestException restException) {
+            public void onFailure(final LeanError error) {
                 Toast.makeText(ViewActivity.this, "Error invoking REST service.", 2000).show();
             }
         });

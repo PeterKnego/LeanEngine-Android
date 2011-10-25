@@ -1,11 +1,10 @@
 package com.leanengine.rest;
 
-import java.io.IOException;
-import java.util.List;
+import com.leanengine.LeanError;
 
 public interface NetworkCallback<T> {
 
     public void onResult(T... result);
 
-    public void onFailure(RestException restException);
+    public void onFailure(LeanError error);
 }

@@ -1,9 +1,5 @@
 package com.leanengine;
 
-import com.leanengine.rest.RestException;
-
-import java.util.Map;
-
 public interface LoginListener {
 
     public void onSuccess(String token);
@@ -17,6 +13,6 @@ public interface LoginListener {
      * Facebook: http://developers.facebook.com/docs/oauth/errors/
      * Twitter:
      */
-    public void onError(RestException exception);
+    public void onError(LeanError error);
 
 }

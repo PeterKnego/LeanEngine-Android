@@ -3,6 +3,8 @@ package com.leanengine.rest;
 import android.os.AsyncTask;
 import com.leanengine.LeanEngine;
 import com.leanengine.LeanEntity;
+import com.leanengine.LeanError;
+import com.leanengine.LeanException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -18,7 +20,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class RestService {
 
@@ -44,7 +49,8 @@ public class RestService {
 //    public static void putPrivateEntity()
 
     public static void getPrivateEntitiesAsync(final NetworkCallback<LeanEntity> networkCallback) {
-        if (LeanEngine.getLoginData() == null) networkCallback.onFailure(new RestException(0, "User not logged in"));
+        if (LeanEngine.getLoginData() == null)
+            networkCallback.onFailure(new LeanError(LeanError.Error.NoAccountAuthorized));
 
         RestAsyncTask<LeanEntity[]> aTask = new RestAsyncTask<LeanEntity[]>(networkCallback) {
 
@@ -59,9 +65,9 @@ public class RestService {
                     JSONObject jsonObject = doGet(url);
                     return fromJsonArray(jsonObject);
                 } catch (IOException e) {
-                    error = new RestException(e);
+                    error = new LeanError(LeanError.Error.ServerNotAccessible);
                 } catch (JSONException e) {
-                    error = new RestException(e);
+                    error = new LeanError(LeanError.Error.ReplyNotJSON);
                 }
                 return null;
             }
@@ -81,7 +87,8 @@ public class RestService {
     }
 
     public static void putPrivateEntity(final LeanEntity entity, final NetworkCallback<Long> networkCallback) {
-        if (LeanEngine.getLoginData() == null) networkCallback.onFailure(new RestException(0, "User not logged in"));
+        if (LeanEngine.getLoginData() == null)
+            networkCallback.onFailure(new LeanError(LeanError.Error.NoAccountAuthorized));
 
         RestAsyncTask<Long> aTask = new RestAsyncTask<Long>(networkCallback) {
 
@@ -97,9 +104,9 @@ public class RestService {
                     JSONObject jsonObject = doPost(url, param);
                     return idFromJson(jsonObject);
                 } catch (IOException e) {
-                    error = new RestException(e);
+                    error = new LeanError(LeanError.Error.ServerNotAccessible);
                 } catch (JSONException e) {
-                    error = new RestException(e);
+                    error = new LeanError(LeanError.Error.ReplyNotJSON);
                 }
                 return null;
             }
@@ -121,7 +128,7 @@ public class RestService {
     public static abstract class RestAsyncTask<Result> extends AsyncTask<Void, Void, Result> {
 
         private NetworkCallback callback;
-        protected RestException error;
+        protected LeanError error;
 
         protected RestAsyncTask(NetworkCallback callback) {
             this.callback = callback;
@@ -132,29 +139,29 @@ public class RestService {
     public static class RestResponseHandler implements ResponseHandler<JSONObject> {
 
         @Override
-        public JSONObject handleResponse(HttpResponse response) throws RestException {
+        public JSONObject handleResponse(HttpResponse response) throws LeanException {
             StatusLine statusLine = response.getStatusLine();
-            if (statusLine.getStatusCode() >= 300) {
-                throw new RestException(statusLine.getStatusCode(),
-                        statusLine.getReasonPhrase());
-            }
 
             HttpEntity entity = response.getEntity();
             String result;
             try {
                 result = entity != null ? EntityUtils.toString(entity) : null;
             } catch (IOException e) {
-                throw new RestException(0, e.getMessage());
+                throw new LeanException(new LeanError(LeanError.Error.ServerNotAccessible));
+            }
+
+            if (statusLine.getStatusCode() >= 300) {
+                throw new LeanException(LeanError.fromJSON(result));
             }
 
             if (result != null) {
                 try {
                     return new JSONObject(result);
                 } catch (JSONException e) {
-                    throw new RestException(0, "Invalid reply from REST server: content not JSON.");
+                    throw new LeanException(new LeanError(LeanError.Error.ReplyNotJSON));
                 }
             } else {
-                throw new RestException(0, "Empty response from REST service");
+                throw new LeanException(new LeanError(LeanError.Error.ReplyNotJSON));
             }
         }
     }

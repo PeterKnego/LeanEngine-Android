@@ -7,12 +7,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.leanengine.LeanEntity;
+import com.leanengine.LeanError;
 import com.leanengine.rest.NetworkCallback;
-import com.leanengine.rest.RestException;
 import com.leanengine.rest.RestService;
 
 import java.util.HashMap;
-import java.util.List;
 
 
 public class EditActivity extends Activity {
@@ -69,7 +68,7 @@ public class EditActivity extends Activity {
                     }
 
                     @Override
-                    public void onFailure(RestException restException) {
+                    public void onFailure(LeanError error) {
                         Toast.makeText(EditActivity.this, "Error invoking REST service.", 2000).show();
                     }
                 });

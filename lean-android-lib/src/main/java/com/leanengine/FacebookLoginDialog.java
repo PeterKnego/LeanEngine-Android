@@ -19,9 +19,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import com.leanengine.android.lib.R;
-import com.leanengine.rest.RestException;
 
-public class FbDialog extends Dialog {
+public class FacebookLoginDialog extends Dialog {
 
     static final int FB_BLUE = 0xFF6D84B4;
     static final float[] DIMENSIONS_DIFF_LANDSCAPE = {20, 60};
@@ -41,7 +40,7 @@ public class FbDialog extends Dialog {
     private WebView mWebView;
     private FrameLayout mContent;
 
-    public FbDialog(Context context, String url, LoginListener listener) {
+    public FacebookLoginDialog(Context context, String url, LoginListener listener) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
         mUrl = url;
         mListener = listener;
@@ -83,7 +82,7 @@ public class FbDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 mListener.onCancel();
-                FbDialog.this.dismiss();
+                FacebookLoginDialog.this.dismiss();
             }
         });
         Drawable crossDrawable = getContext().getResources().getDrawable(R.drawable.close);
@@ -99,7 +98,7 @@ public class FbDialog extends Dialog {
         mWebView = new WebView(getContext());
         mWebView.setVerticalScrollBarEnabled(false);
         mWebView.setHorizontalScrollBarEnabled(false);
-        mWebView.setWebViewClient(new FbDialog.FbWebViewClient());
+        mWebView.setWebViewClient(new FacebookLoginDialog.FbWebViewClient());
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.loadUrl(mUrl);
         mWebView.setLayoutParams(FILL);
@@ -115,20 +114,19 @@ public class FbDialog extends Dialog {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
-            Log.e("FbWebViewClient", "url: " + url);
-
              if (url != null && url.startsWith("leanengine://")) {
                     UrlQuerySanitizer query = new UrlQuerySanitizer(url);
 
                     String token = query.getValue("auth_token");
                     if (token != null) {
-                        FbDialog.this.dismiss();
+                        FacebookLoginDialog.this.dismiss();
                         mListener.onSuccess(token);
                     } else {
                         String errorCode = query.getValue("errorcode");
                         String errorMsg = query.getValue("errormsg");
-                        FbDialog.this.dismiss();
-                        mListener.onError(new RestException(401, "errorCode=" + errorCode + " errorMsg=" + errorMsg));
+                        FacebookLoginDialog.this.dismiss();
+                        mListener.onError(new LeanError(LeanError.Error.FacebookAuthResponseError,
+                                " errorCode=" + errorCode + " errorMsg=" + errorMsg));
                     }
                     return true;
                 }
@@ -139,8 +137,8 @@ public class FbDialog extends Dialog {
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
-            mListener.onError(new RestException(20, "User cancelled login."));
-            FbDialog.this.dismiss();
+            mListener.onError(new LeanError(LeanError.Error.FacebookAuthConnectError));
+            FacebookLoginDialog.this.dismiss();
         }
 
         @Override

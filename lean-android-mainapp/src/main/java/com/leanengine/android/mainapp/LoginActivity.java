@@ -6,11 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import com.leanengine.FbDialog;
-import com.leanengine.LeanAccount;
-import com.leanengine.LeanEngine;
-import com.leanengine.LoginListener;
-import com.leanengine.rest.RestException;
+import com.leanengine.*;
 
 public class LoginActivity extends Activity {
 
@@ -39,23 +35,23 @@ public class LoginActivity extends Activity {
 
                 Uri loginUri = LeanEngine.getFacebookLoginUri();
 
-                FbDialog fbDialog = new FbDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
+                FacebookLoginDialog fbDialog = new FacebookLoginDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
                     @Override
                     public void onSuccess(String token) {
-                        Log.d("FbDialog", "success!");
+                        Log.d("FacebookLoginDialog", "success!");
                         LeanEngine.setAuthData(token);
                         checkLogin(loginButton, logoutButton, tabHost);
                     }
 
                     @Override
                     public void onCancel() {
-                        Log.d("FbDialog", "cancelled");
+                        Log.d("FacebookLoginDialog", "cancelled");
                         checkLogin(loginButton, logoutButton, tabHost);
                     }
 
                     @Override
-                    public void onError(RestException exception) {
-                        Log.d("FbDialog", "Error: " + exception.getMessage());
+                    public void onError(LeanError error) {
+                        Log.d("FacebookLoginDialog", "Error: " + error.getErrorMessage());
                         checkLogin(loginButton, logoutButton, tabHost);
                     }
                 });

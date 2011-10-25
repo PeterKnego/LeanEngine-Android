@@ -8,7 +8,6 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.leanengine.rest.NetworkCallback;
-import com.leanengine.rest.RestException;
 
 public class LeanAccount {
 
@@ -42,32 +41,11 @@ public class LeanAccount {
         appContext.startActivity(browserIntent);
     }
 
-    public static void loginFacebook(final WebView webView, final NetworkCallback<Long> authCallback) {
+    //todo make public after it's done
+    private static void loginFacebook(final WebView webView, final NetworkCallback<Long> authCallback) {
 
+        //todo enable user passing in their own WebView
 
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.e("FacebookOAuth", "shouldOverrideUrlLoading url:" + url);
-
-                if (url != null && url.startsWith("leanengine://")) {
-                    UrlQuerySanitizer query = new UrlQuerySanitizer(url);
-
-                    String token = query.getValue("auth_token");
-                    if (token != null) {
-                        authCallback.onResult();
-                    } else {
-                        String errorCode = query.getValue("errorcode");
-                        String errorMsg = query.getValue("errormsg");
-                        authCallback.onFailure(new RestException(401, "errorCode=" + errorCode + " errorMsg=" + errorMsg));
-                    }
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        webView.loadUrl(LeanEngine.getFacebookLoginUri().toString());
     }
 
     public static void logout() {
