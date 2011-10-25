@@ -57,11 +57,11 @@ public class RestService {
                 String url;
                 if (kind != null) {
                     url = LeanEngine.getHost() +
-                            "/rest/entity/"+kind+"?lean_token=" +
+                            "/rest/v1/entity/"+kind+"?lean_token=" +
                             LeanEngine.getLoginData().getAuthToken();
                 } else {
                     url = LeanEngine.getHost() +
-                            "/rest/entity?lean_token=" +
+                            "/rest/v1/entity?lean_token=" +
                             LeanEngine.getLoginData().getAuthToken();
                 }
 
@@ -95,7 +95,7 @@ public class RestService {
             throw new LeanException(new LeanError(LeanError.Error.NoAccountAuthorized));
         //todo externalize URLs (and token insertion)
         String url = LeanEngine.getHost() +
-                "/rest/entity/" + entity.kind + "?lean_token=" +
+                "/rest/v1/entity/" + entity.kind + "?lean_token=" +
                 LeanEngine.getLoginData().getAuthToken();
         try {
             JSONObject param = toJson(entity);
