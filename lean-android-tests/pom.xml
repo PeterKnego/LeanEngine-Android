@@ -32,14 +32,6 @@
             <groupId>com.leanengine.android</groupId>
             <artifactId>mainapp</artifactId>
             <version>0.1</version>
-            <type>apk</type>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.leanengine.android</groupId>
-            <artifactId>mainapp</artifactId>
-            <version>0.1</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>

@@ -11,8 +11,6 @@ import com.leanengine.LeanEntity;
 import com.leanengine.LeanError;
 import com.leanengine.NetworkCallback;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -42,7 +40,7 @@ public class ViewActivity extends ListActivity {
 //            }
 //        });
 
-        Button loginButton = (Button) findViewById(R.id.loadButton);
+        Button loginButton = (Button) findViewById(R.id.startButton);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {

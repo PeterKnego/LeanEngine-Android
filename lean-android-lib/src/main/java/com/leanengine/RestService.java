@@ -18,7 +18,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 public class RestService {
@@ -67,7 +66,7 @@ public class RestService {
 
                 try {
                     JSONObject jsonObject = doGet(url);
-                    return fromJsonArray(jsonObject);
+                    return entityListFromJson(jsonObject);
                 } catch (IOException e) {
                     error = new LeanError(LeanError.Error.ServerNotAccessible);
                 } catch (JSONException e) {
@@ -92,19 +91,19 @@ public class RestService {
 
     protected static long putPrivateEntity(final LeanEntity entity) throws LeanException {
         if (LeanEngine.getLoginData() == null)
-            throw new LeanException(new LeanError(LeanError.Error.NoAccountAuthorized));
+            throw new LeanException(LeanError.Error.NoAccountAuthorized);
         //todo externalize URLs (and token insertion)
         String url = LeanEngine.getHost() +
                 "/rest/v1/entity/" + entity.kind + "?lean_token=" +
                 LeanEngine.getLoginData().getAuthToken();
         try {
-            JSONObject param = toJson(entity);
+            JSONObject param = entityToJson(entity);
             JSONObject jsonObject = doPost(url, param);
             return idFromJson(jsonObject);
         } catch (IOException e) {
-            throw new LeanException(new LeanError(LeanError.Error.ServerNotAccessible));
+            throw new LeanException(LeanError.Error.ServerNotAccessible);
         } catch (JSONException e) {
-            throw new LeanException(new LeanError(LeanError.Error.ReplyNotJSON));
+            throw new LeanException(LeanError.Error.ReplyNotJSON);
         }
     }
 
@@ -154,7 +153,7 @@ public class RestService {
             try {
                 result = entity != null ? EntityUtils.toString(entity) : null;
             } catch (IOException e) {
-                throw new LeanException(new LeanError(LeanError.Error.ServerNotAccessible));
+                throw new LeanException(LeanError.Error.ServerNotAccessible);
             }
 
             if (statusLine.getStatusCode() >= 300) {
@@ -165,10 +164,10 @@ public class RestService {
                 try {
                     return new JSONObject(result);
                 } catch (JSONException e) {
-                    throw new LeanException(new LeanError(LeanError.Error.ReplyNotJSON));
+                    throw new LeanException(LeanError.Error.ReplyNotJSON);
                 }
             } else {
-                throw new LeanException(new LeanError(LeanError.Error.ReplyNotJSON));
+                throw new LeanException(LeanError.Error.ReplyNotJSON);
             }
         }
     }
@@ -177,7 +176,7 @@ public class RestService {
         return json.getLong("id");
     }
 
-    private static LeanEntity fromJsonObject(JSONObject json) throws JSONException {
+    private static LeanEntity entityFromJson(JSONObject json) throws JSONException {
         LeanEntity entity = new LeanEntity(json.getString("_kind"));
         entity.properties = new HashMap<String, Object>(json.length() - 3);
         Iterator keyIter = json.keys();
@@ -197,17 +196,17 @@ public class RestService {
         return entity;
     }
 
-    private static LeanEntity[] fromJsonArray(JSONObject json) throws JSONException {
-        JSONArray array = json.getJSONArray("list");
+    private static LeanEntity[] entityListFromJson(JSONObject json) throws JSONException {
+        JSONArray array = json.getJSONArray("result");
         LeanEntity[] result = new LeanEntity[array.length()];
         for (int i = 0; i < array.length(); i++) {
             JSONObject item = array.getJSONObject(i);
-            result[i] = fromJsonObject(item);
+            result[i] = entityFromJson(item);
         }
         return result;
     }
 
-    private static JSONObject toJson(LeanEntity entity) throws JSONException {
+    private static JSONObject entityToJson(LeanEntity entity) throws JSONException {
         JSONObject json = new JSONObject();
         if (entity.id != 0)
             json.put("_id", entity.id);
@@ -221,15 +220,4 @@ public class RestService {
         return json;
     }
 
-    private static JSONObject toJson(List<LeanEntity> entityList) throws JSONException {
-        JSONObject json = new JSONObject();
-        JSONArray array = new JSONArray();
-
-        for (LeanEntity entity : entityList) {
-            array.put(toJson(entity));
-        }
-
-        json.put("list", array);
-        return json;
-    }
 }

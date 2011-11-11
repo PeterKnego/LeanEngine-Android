@@ -1,5 +1,6 @@
 package com.leanengine.query;
 
+import com.leanengine.LeanError;
 import com.leanengine.LeanException;
 
 public class QuerySort {
@@ -20,15 +21,13 @@ public class QuerySort {
     }
 
     public enum SortDirection {
-        ASCENDING("asc", Query.SortDirection.ASCENDING),
-        DESCENDING("desc", Query.SortDirection.DESCENDING);
+        ASCENDING("asc"),
+        DESCENDING("desc");
 
         private String sortString;
-        private Query.SortDirection sortDirection;
 
-        SortDirection(String sortString, Query.SortDirection sortDirection) {
+        SortDirection(String sortString) {
             this.sortString = sortString;
-            this.sortDirection = sortDirection;
         }
 
         public static SortDirection create(String sortJson) throws LeanException {
@@ -37,11 +36,7 @@ public class QuerySort {
             } else if ("desc".equals(sortJson)) {
                 return SortDirection.DESCENDING;
             }
-            throw new LeanException(LeanException.Error.UnsupportedQuerySortOperation, sortJson);
-        }
-
-        public Query.SortDirection getSortDirection() {
-            return sortDirection;
+            throw new LeanException(LeanError.Error.UnsupportedQuerySortOperation, sortJson);
         }
 
         public String toJSON() {

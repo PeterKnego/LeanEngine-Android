@@ -1,9 +1,7 @@
 package com.leanengine.query;
 
+import com.leanengine.LeanError;
 import com.leanengine.LeanException;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonValue;
 
 public class QueryFilter {
     private String property;
@@ -30,16 +28,15 @@ public class QueryFilter {
     }
 
     public enum FilterOperator {
-        IN("IN",Query.FilterOperator.IN),
-        EQUAL("=",Query.FilterOperator.EQUAL),
-        GREATER_THAN(">",Query.FilterOperator.GREATER_THAN),
-        GREATER_THAN_OR_EQUAL(">=",Query.FilterOperator.GREATER_THAN_OR_EQUAL),
-        LESS_THAN("<",Query.FilterOperator.LESS_THAN),
-        LESS_THAN_OR_EQUAL("<=",Query.FilterOperator.LESS_THAN_OR_EQUAL),
-        NOT_EQUAL("!=",Query.FilterOperator.NOT_EQUAL);
+        IN("IN"),
+        EQUAL("="),
+        GREATER_THAN(">"),
+        GREATER_THAN_OR_EQUAL(">="),
+        LESS_THAN("<"),
+        LESS_THAN_OR_EQUAL("<="),
+        NOT_EQUAL("!=");
 
         private String operatorString;
-        private Query.FilterOperator gaeOperator;
 
         static FilterOperator create(String jsonOperator) throws LeanException {
             if("=".equals(jsonOperator)){
@@ -57,16 +54,11 @@ public class QueryFilter {
             } else if("IN".equals(jsonOperator)){
                 return FilterOperator.IN;
             }
-            throw new LeanException(LeanException.Error.UnsupportedQueryFilterOperation, jsonOperator);
+            throw new LeanException(LeanError.Error.UnsupportedQueryFilterOperation, jsonOperator);
         }
 
-        FilterOperator( String operatorString, Query.FilterOperator gaeOperator) {
+        FilterOperator( String operatorString) {
             this.operatorString = operatorString;
-            this.gaeOperator = gaeOperator;
-        }
-
-        public Query.FilterOperator getFilterOperator() {
-            return gaeOperator;
         }
 
         public String toJSON() {

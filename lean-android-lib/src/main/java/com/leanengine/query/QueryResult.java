@@ -1,24 +1,23 @@
 package com.leanengine.query;
 
-import com.google.appengine.api.datastore.Cursor;
-import com.google.appengine.api.datastore.Entity;
+import com.leanengine.LeanEntity;
 
 import java.util.List;
 
 public class QueryResult {
-    private List<Entity> result;
-    private Cursor cursor;
+    private List<LeanEntity> result;
+    private String cursor;
 
-    public QueryResult(List<Entity> result, Cursor cursor) {
+    public QueryResult(List<LeanEntity> result, String cursor) {
         this.result = result;
         this.cursor = cursor;
     }
 
-    public List<Entity> getResult() {
+    public List<LeanEntity> getResult() {
         return result;
     }
 
-    public Cursor getCursor() {
+    public String getCursor() {
         return cursor;
     }
 }

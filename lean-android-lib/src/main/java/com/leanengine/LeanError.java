@@ -12,13 +12,17 @@ public class LeanError {
         EmptyEntity(102, "LeanEntity contains no properties."),
         IllegalEntityFormat(103, "Illegal LeanEntity format."),
         EntityNotFound(104, "Entity not found."),
-        EntityToJSON(105, "Entity missing "),
-        LeanExceptionToJSON(106, "Error parsing error JSON data."),
-        NoAccountAuthorized(107, "No account authorized to access server."),
-        ServerNotAccessible(108, "Server is not accessible."),
-        ReplyNotJSON(109, "Server reply is not a valid JSON."),
-        RestTaskExecutionError(110, "REST background task execution error."),
-        RestTaskInterrupted(111, "REST background task was interrupted"),
+        QueryJSON(105, "Query JSON could not be parsed."),
+        UnsupportedQueryFilterOperation(106, "Query contains unsupported filter operation: "),
+        UnsupportedQuerySortOperation(107, "Query contains unsupported sort operation: "),
+        ValueToJSON(108, "Value node could not be converted to a supported type."),
+        LeanExceptionToJSON(120, "Error parsing error JSON data."),
+        NoAccountAuthorized(121, "No account authorized to access server."),
+        ServerNotAccessible(122, "Server is not accessible."),
+        ReplyNotJSON(123, "Server reply is not a valid JSON."),
+        RestTaskExecutionError(124, "REST background task execution error."),
+        RestTaskInterrupted(125, "REST background task was interrupted"),
+        CreatingJsonError(126, "Error adding property to JSON object."),
 
         // server errors have codes below 100
         // they happen when server has problems fulfilling request
@@ -35,7 +39,13 @@ public class LeanError {
         OpenIdAuthFailed(11, "OpenID authentication failed."),
         OpenIdAuthNotEnabled(12, "Server configuration error: OpenID login not enabled."),
         ScriptExecutionError(20, "Error executing script: "),
-        ScriptOutputError(21, "Illegal script result error: custom scripts must produce a Javascript object. Script: ");
+        ScriptOutputError(21, "Illegal script result error: custom scripts must produce a Javascript object. Script: "),
+        NotAuthorized(40, "No account active or account not authorized to access this resource."),
+        AppEngineMissingIndex(41, "AppEngine query error: missing index. Try running this query on dev server to " +
+                "automatically create needed indexes and then upload to production."),
+        ServerSessionsNotEnabled(42, "Sessions not enabled on server."),
+        MissingRedirectUrl(43, "Login request must have URL parameter 'onlogin' used for redirect on successful login.");
+
 
         public int errorCode;
         public String errorMessage;
@@ -60,9 +70,9 @@ public class LeanError {
     }
 
     public LeanError(Error error, String additionalMessage) {
-            this.errorCode = error.errorCode;
-            this.errorMessage = error.errorMessage + additionalMessage;
-        }
+        this.errorCode = error.errorCode;
+        this.errorMessage = error.errorMessage + additionalMessage;
+    }
 
     public int getErrorCode() {
         return errorCode;

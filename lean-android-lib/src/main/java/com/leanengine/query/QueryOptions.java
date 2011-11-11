@@ -1,6 +1,9 @@
 package com.leanengine.query;
 
-import org.codehaus.jackson.node.ObjectNode;
+import com.leanengine.LeanError;
+import com.leanengine.LeanException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class QueryOptions {
     private Integer limit;
@@ -49,13 +52,17 @@ public class QueryOptions {
         this.endCursor = cursor;
     }
 
-    public static QueryOptions fromJson(ObjectNode node) {
-        QueryOptions options = new QueryOptions();
-        if (node.get("startCursor") != null) options.setStartCursor(node.get("startCursor").getTextValue());
-        if (node.get("endCursor") != null) options.setEndCursor(node.get("endCursor").getTextValue());
-        if (node.get("limit") != null) options.setLimit(node.get("limit").getIntValue());
-        if (node.get("offset") != null) options.setOffset(node.get("offset").getIntValue());
-        if (node.get("prefetchSize") != null) options.setPrefetchSize(node.get("prefetchSize").getIntValue());
-        return options;
+    public static QueryOptions fromJson(JSONObject node) throws LeanException {
+        try {
+            QueryOptions options = new QueryOptions();
+            if (node.get("startCursor") != null) options.setStartCursor(node.getString("startCursor"));
+            if (node.get("endCursor") != null) options.setEndCursor(node.getString("endCursor"));
+            if (node.get("limit") != null) options.setLimit(node.getInt("limit"));
+            if (node.get("offset") != null) options.setOffset(node.getInt("offset"));
+            if (node.get("prefetchSize") != null) options.setPrefetchSize(node.getInt("prefetchSize"));
+            return options;
+        } catch (JSONException e) {
+            throw new LeanException(LeanError.Error.CreatingJsonError, " \n\n"+e.getMessage());
+        }
     }
 }
