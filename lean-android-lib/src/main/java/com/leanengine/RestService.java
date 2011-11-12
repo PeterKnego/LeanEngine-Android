@@ -11,14 +11,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class RestService {
 
@@ -66,11 +62,9 @@ public class RestService {
 
                 try {
                     JSONObject jsonObject = doGet(url);
-                    return entityListFromJson(jsonObject);
+                    return JsonDecode.entityListFromJson(jsonObject);
                 } catch (IOException e) {
                     error = new LeanError(LeanError.Error.ServerNotAccessible);
-                } catch (JSONException e) {
-                    error = new LeanError(LeanError.Error.ReplyNotJSON);
                 }
                 return null;
             }
@@ -97,13 +91,13 @@ public class RestService {
                 "/rest/v1/entity/" + entity.kind + "?lean_token=" +
                 LeanEngine.getLoginData().getAuthToken();
         try {
-            JSONObject param = entityToJson(entity);
+            JSONObject param = JsonEncode.entityToJson(entity);
             JSONObject jsonObject = doPost(url, param);
             return idFromJson(jsonObject);
         } catch (IOException e) {
             throw new LeanException(LeanError.Error.ServerNotAccessible);
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ReplyNotJSON);
+            throw new LeanException(LeanError.Error.ErrorParsingJSON);
         }
     }
 
@@ -164,60 +158,16 @@ public class RestService {
                 try {
                     return new JSONObject(result);
                 } catch (JSONException e) {
-                    throw new LeanException(LeanError.Error.ReplyNotJSON);
+                    throw new LeanException(LeanError.Error.ErrorParsingJSON);
                 }
             } else {
-                throw new LeanException(LeanError.Error.ReplyNotJSON);
+                throw new LeanException(LeanError.Error.ErrorParsingJSON);
             }
         }
     }
 
     private static Long idFromJson(JSONObject json) throws JSONException {
         return json.getLong("id");
-    }
-
-    private static LeanEntity entityFromJson(JSONObject json) throws JSONException {
-        LeanEntity entity = new LeanEntity(json.getString("_kind"));
-        entity.properties = new HashMap<String, Object>(json.length() - 3);
-        Iterator keyIter = json.keys();
-        while (keyIter.hasNext()) {
-            String key = (String) keyIter.next();
-            if (key.equals("_id")) {
-                entity.id = Long.decode(json.get(key).toString());
-            } else if (key.equals("_kind")) {
-                // already handled - skip it
-            } else if (key.equals("_account")) {
-                entity.accountID = Long.parseLong(json.get(key).toString());
-            } else {
-                // todo Implement proper property typing (with prefixes)
-                entity.properties.put(key, json.get(key));
-            }
-        }
-        return entity;
-    }
-
-    private static LeanEntity[] entityListFromJson(JSONObject json) throws JSONException {
-        JSONArray array = json.getJSONArray("result");
-        LeanEntity[] result = new LeanEntity[array.length()];
-        for (int i = 0; i < array.length(); i++) {
-            JSONObject item = array.getJSONObject(i);
-            result[i] = entityFromJson(item);
-        }
-        return result;
-    }
-
-    private static JSONObject entityToJson(LeanEntity entity) throws JSONException {
-        JSONObject json = new JSONObject();
-        if (entity.id != 0)
-            json.put("_id", entity.id);
-        json.put("_kind", entity.kind);
-        // no need to put in '_account` as this is automatically set on server from current users accountID
-        Map<String, Object> props = entity.properties;
-        for (Map.Entry<String, Object> prop : props.entrySet()) {
-            // todo handle proper typing of properties
-            json.put(prop.getKey(), prop.getValue());
-        }
-        return json;
     }
 
 }

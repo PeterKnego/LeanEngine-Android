@@ -18,7 +18,7 @@ public class LeanEngine {
      * @param host    The path to the host server, i.e. 'http://demo.lean-engine.com'
      */
     public static void init(Context context, String host) {
-        LeanEngine.facebookLoginUri = Uri.parse(host + "/login/facebook-start.jsp?type=mobile");
+        LeanEngine.facebookLoginUri = Uri.parse(host + "/facebook?type=mobile");
         LeanEngine.hostUri = Uri.parse(host);
         LeanEngine.appContext = context.getApplicationContext();
     }

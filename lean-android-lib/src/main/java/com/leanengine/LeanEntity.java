@@ -14,6 +14,12 @@ public class LeanEntity {
         this.kind = kind;
     }
 
+    protected LeanEntity(String kind, long id, long accountID) {
+        this.kind = kind;
+        this.id = id;
+        this.accountID = accountID;
+    }
+
     public static LeanEntity init(String kind) {
         return new LeanEntity(kind);
     }
@@ -56,6 +62,14 @@ public class LeanEntity {
 
     public String getKind() {
         return kind;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public long getAccountID() {
+        return accountID;
     }
 
     public String getString(String key) {

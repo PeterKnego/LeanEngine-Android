@@ -26,6 +26,7 @@
         <activity android:name=".LoginActivity"/>
         <activity android:name=".EditActivity"/>
         <activity android:name=".ViewActivity"/>
+        <activity android:name=".TestsActivity"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>

@@ -67,6 +67,7 @@ public class LoginActivity extends Activity {
                 logoutButton.setVisibility(View.INVISIBLE);
                 tabHost.getTabWidget().getChildTabViewAt(1).setVisibility(View.INVISIBLE);
                 tabHost.getTabWidget().getChildTabViewAt(2).setVisibility(View.INVISIBLE);
+                tabHost.getTabWidget().getChildTabViewAt(3).setVisibility(View.INVISIBLE);
 
                 LeanAccount.logout();
                 checkLogin(loginButton, logoutButton, tabHost);
@@ -84,11 +85,13 @@ public class LoginActivity extends Activity {
             logoutButton.setVisibility(View.VISIBLE);
             tabHost.getTabWidget().getChildTabViewAt(1).setVisibility(View.VISIBLE);
             tabHost.getTabWidget().getChildTabViewAt(2).setVisibility(View.VISIBLE);
+            tabHost.getTabWidget().getChildTabViewAt(3).setVisibility(View.VISIBLE);
         } else {
             loginButton.setVisibility(View.VISIBLE);
             logoutButton.setVisibility(View.INVISIBLE);
             tabHost.getTabWidget().getChildTabViewAt(1).setVisibility(View.INVISIBLE);
             tabHost.getTabWidget().getChildTabViewAt(2).setVisibility(View.INVISIBLE);
+            tabHost.getTabWidget().getChildTabViewAt(3).setVisibility(View.INVISIBLE);
         }
     }
 }
