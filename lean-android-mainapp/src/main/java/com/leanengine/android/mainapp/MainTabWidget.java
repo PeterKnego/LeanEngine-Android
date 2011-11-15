@@ -46,12 +46,13 @@ public class MainTabWidget extends TabActivity {
 
          intent = new Intent().setClass(this, TestsActivity.class);
         spec = tabHost.newTabSpec("tests").setIndicator("Test",
-                res.getDrawable(R.drawable.ic_tab_view))
+                res.getDrawable(R.drawable.ic_tab_test))
                 .setContent(intent);
         tabHost.addTab(spec);
 
         tabHost.getTabWidget().getChildTabViewAt(1).setVisibility(View.INVISIBLE);
         tabHost.getTabWidget().getChildTabViewAt(2).setVisibility(View.INVISIBLE);
+        tabHost.getTabWidget().getChildTabViewAt(3).setVisibility(View.INVISIBLE);
 
     }
 }

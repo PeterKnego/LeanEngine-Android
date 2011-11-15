@@ -6,8 +6,11 @@ import android.net.Uri;
 
 public class LeanEngine {
 
+    private static String host;
     private static Uri hostUri;
     private static Uri facebookLoginUri;
+    private static Uri googleLoginUri;
+    private static Uri yahooLoginUri;
     private static Context appContext;
     private static LoginData loginData;
 
@@ -18,7 +21,10 @@ public class LeanEngine {
      * @param host    The path to the host server, i.e. 'http://demo.lean-engine.com'
      */
     public static void init(Context context, String host) {
-        LeanEngine.facebookLoginUri = Uri.parse(host + "/login/facebook-start.jsp?type=mobile");
+        LeanEngine.host = host;
+        LeanEngine.facebookLoginUri = Uri.parse(host + "/facebook?type=mobile");
+        LeanEngine.googleLoginUri = Uri.parse(host + "/openid?provider=google&type=mobile");
+        LeanEngine.yahooLoginUri = Uri.parse(host + "/openid?provider=yahoo&type=mobile");
         LeanEngine.hostUri = Uri.parse(host);
         LeanEngine.appContext = context.getApplicationContext();
     }
@@ -51,7 +57,7 @@ public class LeanEngine {
      *
      * @return The Uri of the host server.
      */
-    public static Uri getHost() {
+    public static Uri getHostURI() {
         if (LeanEngine.hostUri == null) {
             throw new IllegalStateException("Before use LeanEngine must be initialized with \"LeanEngine.init(context, hostPath)\"");
         }
@@ -68,6 +74,18 @@ public class LeanEngine {
 
     public static Uri getFacebookLoginUri() {
         return facebookLoginUri;
+    }
+
+    public static Uri getGoogleLoginUri() {
+        return googleLoginUri;
+    }
+
+    public static Uri getYahooLoginUri() {
+        return yahooLoginUri;
+    }
+
+    public static Uri getOpenIdLoginUri(String provider) {
+        return Uri.parse(host + "/openid?provider="+provider+"&type=mobile");
     }
 
     protected static void resetLoginData() {

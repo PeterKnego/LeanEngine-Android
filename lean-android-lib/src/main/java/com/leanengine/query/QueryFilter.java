@@ -8,7 +8,7 @@ public class QueryFilter {
     private FilterOperator operator;
     private Object value;
 
-    public QueryFilter(String property, FilterOperator operator, Object value) {
+    protected QueryFilter(String property, FilterOperator operator, Object value) {
 
         this.property = property;
         this.operator = operator;

@@ -19,10 +19,11 @@ public class LeanError {
         LeanExceptionToJSON(120, "Error parsing error JSON data."),
         NoAccountAuthorized(121, "No account authorized to access server."),
         ServerNotAccessible(122, "Server is not accessible."),
-        ReplyNotJSON(123, "Server reply is not a valid JSON."),
+        ErrorParsingJSON(123, "Server JSON could not be parsed."),
         RestTaskExecutionError(124, "REST background task execution error."),
         RestTaskInterrupted(125, "REST background task was interrupted"),
         CreatingJsonError(126, "Error adding property to JSON object."),
+        JsonMissingFiled(127, "JSON missing required field."),
 
         // server errors have codes below 100
         // they happen when server has problems fulfilling request

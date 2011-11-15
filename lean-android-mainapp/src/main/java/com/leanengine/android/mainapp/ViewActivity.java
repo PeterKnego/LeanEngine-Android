@@ -31,14 +31,15 @@ public class ViewActivity extends ListActivity {
 //            }
 //        });
 //
-//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            public void onItemClick(AdapterView<?> parent, View view,
-//                                    int position, long id) {
-//                // When clicked, show a toast with the TextView text
-//                Toast.makeText(getApplicationContext(), ((TextView) view).getText(),
-//                        Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // When clicked, show a toast with the TextView text
+                Toast.makeText(getApplicationContext(), ((TextView) view).getText(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
 
         Button loginButton = (Button) findViewById(R.id.startButton);
 
