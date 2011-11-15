@@ -1,15 +1,19 @@
 package com.leanengine.android.mainapp;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.leanengine.*;
 
 public class LoginActivity extends Activity {
+    private static String DEFAULT_HOST_URL = "http://lean-engine.appspot.com";
 
 
     /**
@@ -30,10 +34,21 @@ public class LoginActivity extends Activity {
         final Button loginFacebookButton = (Button) findViewById(R.id.loginFacebookButton);
         final Button loginGoogleButton = (Button) findViewById(R.id.loginGoogleButton);
         final Button loginYahooButton = (Button) findViewById(R.id.loginYahooButton);
+        final EditText urlEditText = (EditText) findViewById(R.id.serverUrl);
+        final Button resetButton = (Button) findViewById(R.id.resetButton);
+
+        SharedPreferences preferences = getSharedPreferences("lean-android-prefs", 0);
+        String hostUrl = preferences.getString("url", null);
+
+        if (hostUrl == null || hostUrl.length() == 0) {
+            hostUrl = DEFAULT_HOST_URL;
+        }
+        urlEditText.setText(hostUrl);
 
         loginFacebookButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
 
+                initializeLeanEngineAndSaveUrl(urlEditText.getText().toString());
                 Uri loginUri = LeanEngine.getFacebookLoginUri();
 
                 LoginDialog fbDialog = new LoginDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
@@ -53,6 +68,8 @@ public class LoginActivity extends Activity {
                     @Override
                     public void onError(LeanError error) {
                         Log.d("LoginDialog", "Error: " + error.getErrorMessage());
+                        Toast toast = Toast.makeText(LoginActivity.this, error.getErrorMessage(), Toast.LENGTH_LONG);
+                        toast.show();
                         checkLogin();
                     }
                 });
@@ -64,6 +81,7 @@ public class LoginActivity extends Activity {
         loginGoogleButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
 
+                initializeLeanEngineAndSaveUrl(urlEditText.getText().toString());
                 Uri loginUri = LeanEngine.getGoogleLoginUri();
 
                 LoginDialog fbDialog = new LoginDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
@@ -83,6 +101,8 @@ public class LoginActivity extends Activity {
                     @Override
                     public void onError(LeanError error) {
                         Log.d("LoginDialog", "Error: " + error.getErrorMessage());
+                        Toast toast = Toast.makeText(LoginActivity.this, error.getErrorMessage(), Toast.LENGTH_LONG);
+                        toast.show();
                         checkLogin();
                     }
                 });
@@ -94,6 +114,7 @@ public class LoginActivity extends Activity {
         loginYahooButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
 
+                initializeLeanEngineAndSaveUrl(urlEditText.getText().toString());
                 Uri loginUri = LeanEngine.getYahooLoginUri();
 
                 LoginDialog fbDialog = new LoginDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
@@ -113,6 +134,8 @@ public class LoginActivity extends Activity {
                     @Override
                     public void onError(LeanError error) {
                         Log.d("LoginDialog", "Error: " + error.getErrorMessage());
+                        Toast toast = Toast.makeText(LoginActivity.this, error.getErrorMessage(), Toast.LENGTH_LONG);
+                        toast.show();
                         checkLogin();
                     }
                 });
@@ -121,7 +144,17 @@ public class LoginActivity extends Activity {
             }
         });
 
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                urlEditText.setText(DEFAULT_HOST_URL);
+            }
+        });
+    }
 
+    private void initializeLeanEngineAndSaveUrl(String host) {
+        saveUrl(host);
+        LeanEngine.init(getApplicationContext(), host);
     }
 
     private void enableLogoutButton() {
@@ -156,5 +189,12 @@ public class LoginActivity extends Activity {
             tabHost.getTabWidget().getChildTabViewAt(2).setVisibility(View.INVISIBLE);
             tabHost.getTabWidget().getChildTabViewAt(3).setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void saveUrl(String url) {
+        SharedPreferences preferences = getSharedPreferences("lean-android-prefs", 0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("url", url);
+        editor.commit();
     }
 }
