@@ -14,15 +14,15 @@
   limitations under the License.
   -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/exit_down"
+    <item android:drawable="@drawable/facebook_login_down"
           android:state_focused="true"
           android:state_pressed="true"/>
-    <item android:drawable="@drawable/exit_down"
+    <item android:drawable="@drawable/facebook_login_down"
           android:state_focused="false"
           android:state_pressed="true"/>
-    <item android:drawable="@drawable/exit_down"
+    <item android:drawable="@drawable/facebook_login_down"
           android:state_focused="true"/>
-    <item android:drawable="@drawable/exit"
+    <item android:drawable="@drawable/facebook_login"
           android:state_focused="false"
           android:state_pressed="false"/>
 </selector>
