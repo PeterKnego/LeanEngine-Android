@@ -1,4 +1,4 @@
-package com.leanengine.query;
+package com.leanengine;
 
 import com.leanengine.LeanEntity;
 

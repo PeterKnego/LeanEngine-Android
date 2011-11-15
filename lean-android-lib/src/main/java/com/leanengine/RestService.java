@@ -59,8 +59,6 @@ public class RestService {
     }
 
     protected static void getPrivateEntityAsync(final String kind, final long id, final NetworkCallback<LeanEntity> networkCallback) {
-        if (LeanEngine.getLoginData() == null)
-            networkCallback.onFailure(new LeanError(LeanError.Error.NoAccountAuthorized));
 
         final RestAsyncTask<LeanEntity[]> aTask = new RestAsyncTask<LeanEntity[]>() {
 
@@ -113,8 +111,6 @@ public class RestService {
     }
 
     protected static void getPrivateEntitiesAsync(final String kind, final NetworkCallback<LeanEntity> networkCallback) {
-        if (LeanEngine.getLoginData() == null)
-            networkCallback.onFailure(new LeanError(LeanError.Error.NoAccountAuthorized));
 
         final RestAsyncTask<LeanEntity[]> aTask = new RestAsyncTask<LeanEntity[]>() {
 
@@ -162,9 +158,6 @@ public class RestService {
     }
 
     protected static void putPrivateEntityAsync(final LeanEntity entity, final NetworkCallback<Long> networkCallback) {
-        if (LeanEngine.getLoginData() == null)
-            networkCallback.onFailure(new LeanError(LeanError.Error.NoAccountAuthorized));
-
         RestAsyncTask<Long> aTask = new RestAsyncTask<Long>() {
 
             // executes on background thread
@@ -186,6 +179,58 @@ public class RestService {
                     return;
                 }
                 networkCallback.onResult(entityID);
+            }
+        };
+
+        aTask.execute((Void) null);
+    }
+
+    protected static LeanEntity[] queryPrivate(final LeanQuery query) throws LeanException {
+        if (LeanEngine.getLoginData() == null)
+            throw new LeanException(LeanError.Error.NoAccountAuthorized);
+
+        String url = LeanEngine.getHostURI() +
+                "/rest/v1/query?lean_token=" +
+                LeanEngine.getLoginData().getAuthToken();
+
+        try {
+            JSONObject queryJson = JsonEncode.queryToJson(query);
+            JSONObject jsonObject = doPost(url, queryJson);
+
+            // update the Query's cursor - used in fetching next results
+            String cursor = jsonObject.optString("cursor");
+            if(cursor.length() != 0)
+                query.setCursor(cursor);
+
+            return JsonDecode.entityListFromJson(jsonObject);
+        } catch (IOException e) {
+            throw new LeanException(LeanError.Error.ServerNotAccessible);
+        }
+    }
+
+    protected static void queryPrivateAsync(final LeanQuery query, final NetworkCallback<LeanEntity> networkCallback) {
+
+        final RestAsyncTask<LeanEntity[]> aTask = new RestAsyncTask<LeanEntity[]>() {
+
+            // executes on background thread
+            @Override
+            protected LeanEntity[] doInBackground(Void... lists) {
+                try {
+                    return queryPrivate(query);
+                } catch (LeanException e) {
+                    error = e.getError();
+                    return null;
+                }
+            }
+
+            // executes on UI thread
+            @Override
+            protected void onPostExecute(LeanEntity[] leanEntities) {
+                if (error != null) {
+                    networkCallback.onFailure(error);
+                    return;
+                }
+                networkCallback.onResult(leanEntities);
             }
         };
 
@@ -229,5 +274,4 @@ public class RestService {
     private static Long idFromJson(JSONObject json) throws JSONException {
         return json.getLong("id");
     }
-
 }

@@ -1,7 +1,5 @@
 package com.leanengine;
 
-import com.leanengine.query.LeanQuery;
-import com.leanengine.query.QueryFilter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

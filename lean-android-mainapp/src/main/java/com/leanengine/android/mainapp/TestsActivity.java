@@ -35,10 +35,10 @@ public class TestsActivity extends Activity {
     private void allTests() {
         TestSuite suite = new TestSuite();
 
-        suite.addTest(new SimpleEntityTest("testCreateEntity"));
-        suite.addTest(new SimpleEntityTest("testLoadEntity"));
+//        suite.addTest(new SimpleEntityTest("testCreateEntity"));
+//        suite.addTest(new SimpleEntityTest("testLoadEntity"));
         suite.addTest(new SimpleEntityTest("testQueryEntity"));
-        suite.addTest(new SimpleEntityTest("testDeleteEntity"));
+//        suite.addTest(new SimpleEntityTest("testDeleteEntity"));
 
         TestResult results = new TestResult();
         results.addListener(new BroadcastingTestListener(getApplication()));

@@ -1,8 +1,5 @@
 package com.leanengine;
 
-import com.leanengine.query.LeanQuery;
-import com.leanengine.query.QueryFilter;
-import com.leanengine.query.QuerySort;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +18,7 @@ public class JsonEncode {
             json.put("_kind", entity.kind);
             // no need to put in '_account` as this is automatically set on server from current users accountID
             for (Map.Entry<String, Object> prop : entity.properties.entrySet()) {
-                 addTypedNode(json, prop.getKey(), prop.getValue());
+                addTypedNode(json, prop.getKey(), prop.getValue());
             }
             return json;
         } catch (JSONException e) {
@@ -66,6 +63,10 @@ public class JsonEncode {
                 jsonSorts.put(sort.getProperty(), sort.getDirection().toJSON());
             }
             json.put("sort", jsonSorts);
+
+            json.put("limit", query.getLimit());
+            if (query.getOffset() != 0) json.put("offset", query.getOffset());
+            if (query.getCursor() != null) json.put("cursor", query.getCursor());
 
             return json;
         } catch (JSONException e) {
