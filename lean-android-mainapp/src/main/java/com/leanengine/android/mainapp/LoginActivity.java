@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import com.leanengine.*;
 
 public class LoginActivity extends Activity {
@@ -17,7 +18,6 @@ public class LoginActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkLogin();
     }
 
     @Override
@@ -142,6 +142,7 @@ public class LoginActivity extends Activity {
             enableLogoutButton();
             MainTabWidget tabHost = (MainTabWidget) getParent();
 
+            ((TextView) tabHost.getTabWidget().getChildTabViewAt(0).findViewById(android.R.id.title)).setText("Sign out");
             tabHost.getTabWidget().getChildTabViewAt(1).setVisibility(View.VISIBLE);
             tabHost.getTabWidget().getChildTabViewAt(2).setVisibility(View.VISIBLE);
             tabHost.getTabWidget().getChildTabViewAt(3).setVisibility(View.VISIBLE);
@@ -150,6 +151,7 @@ public class LoginActivity extends Activity {
             enableLoginButtons();
             MainTabWidget tabHost = (MainTabWidget) getParent();
 
+            ((TextView) tabHost.getTabWidget().getChildTabViewAt(0).findViewById(android.R.id.title)).setText("Sign in");
             tabHost.getTabWidget().getChildTabViewAt(1).setVisibility(View.INVISIBLE);
             tabHost.getTabWidget().getChildTabViewAt(2).setVisibility(View.INVISIBLE);
             tabHost.getTabWidget().getChildTabViewAt(3).setVisibility(View.INVISIBLE);
