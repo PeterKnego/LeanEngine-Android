@@ -37,7 +37,80 @@ public class RestService {
         return httpclient.execute(httpPost, new RestResponseHandler());
     }
 
-//    public static void putPrivateEntity()
+    protected static LeanEntity getPrivateEntity(final String kind, final long id) throws LeanException, IllegalArgumentException {
+        if (LeanEngine.getLoginData() == null)
+            throw new LeanException(LeanError.Error.NoAccountAuthorized);
+
+        String url;
+        if (kind != null) {
+            url = LeanEngine.getHostURI() +
+                    "/rest/v1/entity/" + kind + "/" + id + "?lean_token=" +
+                    LeanEngine.getLoginData().getAuthToken();
+
+        } else {
+            throw new IllegalArgumentException("Parameter 'kind' must not be null.");
+        }
+        try {
+            JSONObject jsonObject = doGet(url);
+            return JsonDecode.entityFromJson(jsonObject);
+        } catch (IOException e) {
+            throw new LeanException(LeanError.Error.ServerNotAccessible);
+        }
+    }
+
+    protected static void getPrivateEntityAsync(final String kind, final long id, final NetworkCallback<LeanEntity> networkCallback) {
+        if (LeanEngine.getLoginData() == null)
+            networkCallback.onFailure(new LeanError(LeanError.Error.NoAccountAuthorized));
+
+        final RestAsyncTask<LeanEntity[]> aTask = new RestAsyncTask<LeanEntity[]>() {
+
+            // executes on background thread
+            @Override
+            protected LeanEntity[] doInBackground(Void... lists) {
+                try {
+                    return new LeanEntity[]{getPrivateEntity(kind, id)};
+                } catch (LeanException e) {
+                    error = e.getError();
+                    return null;
+                }
+            }
+
+            // executes on UI thread
+            @Override
+            protected void onPostExecute(LeanEntity[] leanEntities) {
+                if (error != null) {
+                    networkCallback.onFailure(error);
+                    return;
+                }
+                networkCallback.onResult(leanEntities);
+            }
+        };
+
+        aTask.execute((Void) null);
+    }
+
+    protected static LeanEntity[] getPrivateEntities(final String kind) throws LeanException {
+        if (LeanEngine.getLoginData() == null)
+            throw new LeanException(LeanError.Error.NoAccountAuthorized);
+
+        String url;
+        if (kind != null) {
+            url = LeanEngine.getHostURI() +
+                    "/rest/v1/entity/" + kind + "?lean_token=" +
+                    LeanEngine.getLoginData().getAuthToken();
+        } else {
+            url = LeanEngine.getHostURI() +
+                    "/rest/v1/entity?lean_token=" +
+                    LeanEngine.getLoginData().getAuthToken();
+        }
+
+        try {
+            JSONObject jsonObject = doGet(url);
+            return JsonDecode.entityListFromJson(jsonObject);
+        } catch (IOException e) {
+            throw new LeanException(LeanError.Error.ServerNotAccessible);
+        }
+    }
 
     protected static void getPrivateEntitiesAsync(final String kind, final NetworkCallback<LeanEntity> networkCallback) {
         if (LeanEngine.getLoginData() == null)
@@ -48,25 +121,12 @@ public class RestService {
             // executes on background thread
             @Override
             protected LeanEntity[] doInBackground(Void... lists) {
-                //todo externalize URLs (and token insertion)
-                String url;
-                if (kind != null) {
-                    url = LeanEngine.getHost() +
-                            "/rest/v1/entity/"+kind+"?lean_token=" +
-                            LeanEngine.getLoginData().getAuthToken();
-                } else {
-                    url = LeanEngine.getHost() +
-                            "/rest/v1/entity?lean_token=" +
-                            LeanEngine.getLoginData().getAuthToken();
-                }
-
                 try {
-                    JSONObject jsonObject = doGet(url);
-                    return JsonDecode.entityListFromJson(jsonObject);
-                } catch (IOException e) {
-                    error = new LeanError(LeanError.Error.ServerNotAccessible);
+                    return getPrivateEntities(kind);
+                } catch (LeanException e) {
+                    error = e.getError();
+                    return null;
                 }
-                return null;
             }
 
             // executes on UI thread
@@ -87,7 +147,7 @@ public class RestService {
         if (LeanEngine.getLoginData() == null)
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
         //todo externalize URLs (and token insertion)
-        String url = LeanEngine.getHost() +
+        String url = LeanEngine.getHostURI() +
                 "/rest/v1/entity/" + entity.kind + "?lean_token=" +
                 LeanEngine.getLoginData().getAuthToken();
         try {
@@ -101,7 +161,7 @@ public class RestService {
         }
     }
 
-    protected static void putPrivateEntity(final LeanEntity entity, final NetworkCallback<Long> networkCallback) {
+    protected static void putPrivateEntityAsync(final LeanEntity entity, final NetworkCallback<Long> networkCallback) {
         if (LeanEngine.getLoginData() == null)
             networkCallback.onFailure(new LeanError(LeanError.Error.NoAccountAuthorized));
 

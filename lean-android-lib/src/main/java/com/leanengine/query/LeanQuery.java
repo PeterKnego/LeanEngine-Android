@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class LeanQuery {
@@ -19,7 +20,25 @@ public class LeanQuery {
         this.kind = kind;
     }
 
-    public void addFilter(String property, QueryFilter.FilterOperator operator, Object value) {
+//    public static void
+
+    public void addFilter(String property, QueryFilter.FilterOperator operator, long value) {
+        filters.add(new QueryFilter(property, operator, value));
+    }
+
+    public void addFilter(String property, QueryFilter.FilterOperator operator, double value) {
+        filters.add(new QueryFilter(property, operator, value));
+    }
+
+    public void addFilter(String property, QueryFilter.FilterOperator operator, Date value) {
+        filters.add(new QueryFilter(property, operator, value));
+    }
+
+    public void addFilter(String property, QueryFilter.FilterOperator operator, String value) {
+        filters.add(new QueryFilter(property, operator, value));
+    }
+
+    public void addFilter(String property, QueryFilter.FilterOperator operator, boolean value) {
         filters.add(new QueryFilter(property, operator, value));
     }
 
