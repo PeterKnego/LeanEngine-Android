@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.UrlQuerySanitizer;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -20,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import com.leanengine.android.lib.R;
 
-public class FacebookLoginDialog extends Dialog {
+public class LoginDialog extends Dialog {
 
     static final int FB_BLUE = 0xFF6D84B4;
 
@@ -34,7 +33,7 @@ public class FacebookLoginDialog extends Dialog {
     private WebView mWebView;
     private FrameLayout mContent;
 
-    public FacebookLoginDialog(Context context, String url, LoginListener listener) {
+    public LoginDialog(Context context, String url, LoginListener listener) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
         mUrl = url;
         mListener = listener;
@@ -76,7 +75,7 @@ public class FacebookLoginDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 mListener.onCancel();
-                FacebookLoginDialog.this.dismiss();
+                LoginDialog.this.dismiss();
             }
         });
         Drawable crossDrawable = getContext().getResources().getDrawable(R.drawable.close);
@@ -92,7 +91,7 @@ public class FacebookLoginDialog extends Dialog {
         mWebView = new WebView(getContext());
         mWebView.setVerticalScrollBarEnabled(false);
         mWebView.setHorizontalScrollBarEnabled(false);
-        mWebView.setWebViewClient(new FacebookLoginDialog.FbWebViewClient());
+        mWebView.setWebViewClient(new LoginDialog.FbWebViewClient());
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.loadUrl(mUrl);
         mWebView.setLayoutParams(FILL);
@@ -108,23 +107,23 @@ public class FacebookLoginDialog extends Dialog {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
-             if (url != null && url.startsWith("leanengine://")) {
-                    UrlQuerySanitizer query = new UrlQuerySanitizer(url);
+            if (url != null && url.startsWith("leanengine://")) {
+                UrlQuerySanitizer query = new UrlQuerySanitizer(url);
 
-                    String token = query.getValue("auth_token");
-                    if (token != null) {
-                        FacebookLoginDialog.this.dismiss();
-                        mListener.onSuccess(token);
-                    } else {
-                        String errorCode = query.getValue("errorcode");
-                        String errorMsg = query.getValue("errormsg");
-                        FacebookLoginDialog.this.dismiss();
-                        mListener.onError(new LeanError(LeanError.Error.FacebookAuthResponseError,
-                                " errorCode=" + errorCode + " errorMsg=" + errorMsg));
-                    }
-                    return true;
+                String token = query.getValue("auth_token");
+                if (token != null) {
+                    LoginDialog.this.dismiss();
+                    mListener.onSuccess(token);
+                } else {
+                    String errorCode = query.getValue("errorcode");
+                    String errorMsg = query.getValue("errormsg");
+                    LoginDialog.this.dismiss();
+                    mListener.onError(new LeanError(LeanError.Error.FacebookAuthResponseError,
+                            " errorCode=" + errorCode + " errorMsg=" + errorMsg));
                 }
-                return false;
+                return true;
+            }
+            return false;
         }
 
         @Override
@@ -132,7 +131,7 @@ public class FacebookLoginDialog extends Dialog {
                                     String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             mListener.onError(new LeanError(LeanError.Error.FacebookAuthConnectError));
-            FacebookLoginDialog.this.dismiss();
+            LoginDialog.this.dismiss();
         }
 
         @Override

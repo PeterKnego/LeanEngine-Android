@@ -17,42 +17,103 @@ public class LoginActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_layout);
-
+        checkLogin();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        checkLogin();
+    }
 
+    private void enableLoginButtons() {
+        final Button loginFacebookButton = (Button) findViewById(R.id.loginFacebookButton);
+        final Button loginGoogleButton = (Button) findViewById(R.id.loginGoogleButton);
+        final Button loginYahooButton = (Button) findViewById(R.id.loginYahooButton);
 
-        final Button loginButton = (Button) findViewById(R.id.loginButton);
-        final Button logoutButton = (Button) findViewById(R.id.logoutButton);
-        final MainTabWidget tabHost = (MainTabWidget) getParent();
-
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        loginFacebookButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
 
                 Uri loginUri = LeanEngine.getFacebookLoginUri();
 
-                FacebookLoginDialog fbDialog = new FacebookLoginDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
+                LoginDialog fbDialog = new LoginDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
                     @Override
                     public void onSuccess(String token) {
-                        Log.d("FacebookLoginDialog", "success!");
+                        Log.d("LoginDialog", "success!");
                         LeanEngine.setAuthData(token);
-                        checkLogin(loginButton, logoutButton, tabHost);
+                        checkLogin();
                     }
 
                     @Override
                     public void onCancel() {
-                        Log.d("FacebookLoginDialog", "cancelled");
-                        checkLogin(loginButton, logoutButton, tabHost);
+                        Log.d("LoginDialog", "cancelled");
+                        checkLogin();
                     }
 
                     @Override
                     public void onError(LeanError error) {
-                        Log.d("FacebookLoginDialog", "Error: " + error.getErrorMessage());
-                        checkLogin(loginButton, logoutButton, tabHost);
+                        Log.d("LoginDialog", "Error: " + error.getErrorMessage());
+                        checkLogin();
+                    }
+                });
+
+                fbDialog.show();
+            }
+        });
+
+        loginGoogleButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+
+                Uri loginUri = LeanEngine.getGoogleLoginUri();
+
+                LoginDialog fbDialog = new LoginDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
+                    @Override
+                    public void onSuccess(String token) {
+                        Log.d("LoginDialog", "success!");
+                        LeanEngine.setAuthData(token);
+                        checkLogin();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Log.d("LoginDialog", "cancelled");
+                        checkLogin();
+                    }
+
+                    @Override
+                    public void onError(LeanError error) {
+                        Log.d("LoginDialog", "Error: " + error.getErrorMessage());
+                        checkLogin();
+                    }
+                });
+
+                fbDialog.show();
+            }
+        });
+
+        loginYahooButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+
+                Uri loginUri = LeanEngine.getYahooLoginUri();
+
+                LoginDialog fbDialog = new LoginDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
+                    @Override
+                    public void onSuccess(String token) {
+                        Log.d("LoginDialog", "success!");
+                        LeanEngine.setAuthData(token);
+                        checkLogin();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Log.d("LoginDialog", "cancelled");
+                        checkLogin();
+                    }
+
+                    @Override
+                    public void onError(LeanError error) {
+                        Log.d("LoginDialog", "Error: " + error.getErrorMessage());
+                        checkLogin();
                     }
                 });
 
@@ -61,34 +122,34 @@ public class LoginActivity extends Activity {
         });
 
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                loginButton.setVisibility(View.VISIBLE);
-                logoutButton.setVisibility(View.INVISIBLE);
-                tabHost.getTabWidget().getChildTabViewAt(1).setVisibility(View.INVISIBLE);
-                tabHost.getTabWidget().getChildTabViewAt(2).setVisibility(View.INVISIBLE);
-                tabHost.getTabWidget().getChildTabViewAt(3).setVisibility(View.INVISIBLE);
-
-                LeanAccount.logout();
-                checkLogin(loginButton, logoutButton, tabHost);
-
-            }
-        });
-
-        checkLogin(loginButton, logoutButton, tabHost);
-
     }
 
-    private void checkLogin(View loginButton, View logoutButton, MainTabWidget tabHost) {
+    private void enableLogoutButton() {
+        Button logoutButton = (Button) findViewById(R.id.logoutButton);
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                LeanAccount.logout();
+                checkLogin();
+            }
+        });
+    }
+
+    private void checkLogin() {
+
         if (LeanAccount.isLoggedIn()) {
-            loginButton.setVisibility(View.INVISIBLE);
-            logoutButton.setVisibility(View.VISIBLE);
+            setContentView(R.layout.logout_layout);
+            enableLogoutButton();
+            MainTabWidget tabHost = (MainTabWidget) getParent();
+
             tabHost.getTabWidget().getChildTabViewAt(1).setVisibility(View.VISIBLE);
             tabHost.getTabWidget().getChildTabViewAt(2).setVisibility(View.VISIBLE);
             tabHost.getTabWidget().getChildTabViewAt(3).setVisibility(View.VISIBLE);
         } else {
-            loginButton.setVisibility(View.VISIBLE);
-            logoutButton.setVisibility(View.INVISIBLE);
+            setContentView(R.layout.login_layout);
+            enableLoginButtons();
+            MainTabWidget tabHost = (MainTabWidget) getParent();
+
             tabHost.getTabWidget().getChildTabViewAt(1).setVisibility(View.INVISIBLE);
             tabHost.getTabWidget().getChildTabViewAt(2).setVisibility(View.INVISIBLE);
             tabHost.getTabWidget().getChildTabViewAt(3).setVisibility(View.INVISIBLE);
