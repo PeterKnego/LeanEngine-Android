@@ -1,7 +1,9 @@
 **LeanEngine Android client license**
 
-ALl files contained in this source package are licensed 
-under GNU Lesser General Public License v3.
+All files for LeanEngine example client application, contained in ./lean-android-mainapp directory and subdirectories,
+are licensed under modified BSD license. See lean-android-mainapp/License-application.txt
 
-For more info see http://www.gnu.org/licenses/lgpl.html
+All files for LeanEngine client library, contained in ./lean-android-lib directory and subdirectories,
+are licensed under GNU Lesser General Public License v3. See lean-android-library/License-library.txt
+
 
