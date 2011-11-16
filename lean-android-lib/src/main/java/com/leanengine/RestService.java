@@ -6,6 +6,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -37,6 +38,15 @@ public class RestService {
         return httpclient.execute(httpPost, new RestResponseHandler());
     }
 
+    private static JSONObject doDelete(String uri) throws IOException {
+        HttpClient httpclient = new DefaultHttpClient();
+
+        HttpDelete httpget = new HttpDelete(uri);
+        httpget.addHeader("Content-Type", "application/json");
+
+        return httpclient.execute(httpget, new RestResponseHandler());
+    }
+
     protected static LeanEntity getPrivateEntity(final String kind, final long id) throws LeanException, IllegalArgumentException {
         if (LeanEngine.getLoginData() == null)
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
@@ -58,7 +68,8 @@ public class RestService {
         }
     }
 
-    protected static void getPrivateEntityAsync(final String kind, final long id, final NetworkCallback<LeanEntity> networkCallback) {
+    protected static void getPrivateEntityAsync(final String kind, final long id,
+                                                final NetworkCallback<LeanEntity> networkCallback) {
 
         final RestAsyncTask<LeanEntity[]> aTask = new RestAsyncTask<LeanEntity[]>() {
 
@@ -86,6 +97,60 @@ public class RestService {
 
         aTask.execute((Void) null);
     }
+
+
+    public static void deletePrivateEntity(String kind, long id) throws LeanException {
+        if (LeanEngine.getLoginData() == null)
+            throw new LeanException(LeanError.Error.NoAccountAuthorized);
+
+        String url;
+        if (kind != null) {
+            url = LeanEngine.getHostURI() +
+                    "/rest/v1/entity/" + kind + "/" + id + "?lean_token=" +
+                    LeanEngine.getLoginData().getAuthToken();
+
+        } else {
+            throw new IllegalArgumentException("Parameter 'kind' must not be null.");
+        }
+        try {
+            doDelete(url);
+        } catch (IOException e) {
+            throw new LeanException(LeanError.Error.ServerNotAccessible);
+        }
+    }
+
+    public static void deletePrivateEntityAsync(final String kind, final long id, final NetworkCallback<Void> networkCallback)
+            throws LeanException {
+
+        final RestAsyncTask<Void> aTask = new RestAsyncTask<Void>() {
+
+            // executes on background thread
+            @Override
+            protected Void doInBackground(Void... lists) {
+                try {
+                    deletePrivateEntity(kind, id);
+                    return null;
+                } catch (LeanException e) {
+                    error = e.getError();
+                    return null;
+                }
+            }
+
+            // executes on UI thread
+            @Override
+            protected void onPostExecute(Void anything) {
+                if (error != null) {
+                    networkCallback.onFailure(error);
+                    return;
+                }
+                networkCallback.onResult((Void) null);
+            }
+        };
+
+        aTask.execute((Void) null);
+
+    }
+
 
     protected static LeanEntity[] getPrivateEntities(final String kind) throws LeanException {
         if (LeanEngine.getLoginData() == null)
@@ -199,7 +264,7 @@ public class RestService {
 
             // update the Query's cursor - used in fetching next results
             String cursor = jsonObject.optString("cursor");
-            if(cursor.length() != 0)
+            if (cursor.length() != 0)
                 query.setCursor(cursor);
 
             return JsonDecode.entityListFromJson(jsonObject);
@@ -231,6 +296,100 @@ public class RestService {
                     return;
                 }
                 networkCallback.onResult(leanEntities);
+            }
+        };
+
+        aTask.execute((Void) null);
+    }
+
+    protected static Boolean logout() throws LeanException {
+        if (LeanEngine.getLoginData() == null)
+            throw new LeanException(LeanError.Error.NoAccountAuthorized);
+
+        String url = LeanEngine.getHostURI() +
+                "/rest/v1/public/logout?lean_token=" +
+                LeanEngine.getLoginData().getAuthToken();
+
+        try {
+            JSONObject jsonObject = doGet(url);
+            boolean result = resultFromJson(jsonObject);
+
+            // after the request is made we must also clear local data
+            LeanEngine.resetLoginData();
+            return result;
+        } catch (IOException e) {
+            throw new LeanException(LeanError.Error.ServerNotAccessible);
+        } catch (JSONException e) {
+            throw new LeanException(LeanError.Error.ErrorParsingJSON);
+        }
+    }
+
+    public static void logoutAsync(final NetworkCallback<Boolean> callback) {
+       final RestAsyncTask<Boolean[]> aTask = new RestAsyncTask<Boolean[]>() {
+
+            // executes on background thread
+            @Override
+            protected Boolean[] doInBackground(Void... lists) {
+                try {
+                    return new Boolean[]{logout()};
+                } catch (LeanException e) {
+                    error = e.getError();
+                    return null;
+                }
+            }
+
+            // executes on UI thread
+            @Override
+            protected void onPostExecute(Boolean[] result) {
+                if (error != null) {
+                    callback.onFailure(error);
+                    return;
+                }
+                callback.onResult(result);
+            }
+        };
+
+        aTask.execute((Void) null);
+    }
+
+    public static LeanAccount getCurrentAccountData() throws LeanException {
+        if (LeanEngine.getLoginData() == null)
+            throw new LeanException(LeanError.Error.NoAccountAuthorized);
+
+        String url = LeanEngine.getHostURI() +
+                "/rest/v1/public/account?lean_token=" +
+                LeanEngine.getLoginData().getAuthToken();
+
+        try {
+            JSONObject jsonObject = doGet(url);
+            return JsonDecode.accountFromJson(jsonObject);
+        } catch (IOException e) {
+            throw new LeanException(LeanError.Error.ServerNotAccessible);
+        }
+    }
+
+    public static void getCurrentAccountDataAsync(final NetworkCallback<LeanAccount> networkCallback) throws LeanException {
+        final RestAsyncTask<LeanAccount[]> aTask = new RestAsyncTask<LeanAccount[]>() {
+
+            // executes on background thread
+            @Override
+            protected LeanAccount[] doInBackground(Void... lists) {
+                try {
+                    return new LeanAccount[]{getCurrentAccountData()};
+                } catch (LeanException e) {
+                    error = e.getError();
+                    return null;
+                }
+            }
+
+            // executes on UI thread
+            @Override
+            protected void onPostExecute(LeanAccount[] leanAccounts) {
+                if (error != null) {
+                    networkCallback.onFailure(error);
+                    return;
+                }
+                networkCallback.onResult(leanAccounts);
             }
         };
 
@@ -273,5 +432,9 @@ public class RestService {
 
     private static Long idFromJson(JSONObject json) throws JSONException {
         return json.getLong("id");
+    }
+
+    private static boolean resultFromJson(JSONObject json) throws JSONException {
+        return json.getBoolean("result");
     }
 }

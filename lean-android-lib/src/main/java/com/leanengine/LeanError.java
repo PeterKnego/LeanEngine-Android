@@ -23,7 +23,7 @@ public class LeanError {
         RestTaskExecutionError(124, "REST background task execution error."),
         RestTaskInterrupted(125, "REST background task was interrupted"),
         CreatingJsonError(126, "Error adding property to JSON object."),
-        JsonMissingFiled(127, "JSON missing required field."),
+        JsonMissingField(127, "JSON missing required field."),
 
         // server errors have codes below 100
         // they happen when server has problems fulfilling request
@@ -45,7 +45,8 @@ public class LeanError {
         AppEngineMissingIndex(41, "AppEngine query error: missing index. Try running this query on dev server to " +
                 "automatically create needed indexes and then upload to production."),
         ServerSessionsNotEnabled(42, "Sessions not enabled on server."),
-        MissingRedirectUrl(43, "Login request must have URL parameter 'onlogin' used for redirect on successful login.");
+        MissingRedirectUrl(43, "Login request must have URL parameter 'onlogin' used for redirect on successful login."),
+        ErrorSerializingToJson(44, "Object could not be serialized to JSON");
 
 
         public int errorCode;

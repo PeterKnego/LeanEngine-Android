@@ -162,8 +162,19 @@ public class LoginActivity extends Activity {
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                LeanAccount.logout();
-                checkLogin();
+                LeanAccount.logoutInBackground(new NetworkCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean... result) {
+                        Toast.makeText(LoginActivity.this, "Successfully logged out.", Toast.LENGTH_LONG).show();
+                        checkLogin();
+                    }
+
+                    @Override
+                    public void onFailure(LeanError error) {
+                        Log.d("LoginDialog", "Error: " + error.getErrorMessage());
+                        Toast.makeText(LoginActivity.this, error.getErrorMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
     }

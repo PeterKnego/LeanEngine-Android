@@ -88,11 +88,20 @@ public class LeanEntity {
      * This is a blocking operation - it block the execution of current thread until result is returned.
      *
      * @param kind The kind of the Entities to be retrieved.
-     * @throws LeanException In case of authentication, network and data parsing errors.
      * @return An array of LeanEntity
+     * @throws LeanException In case of authentication, network and data parsing errors.
      */
     public static LeanEntity[] getAllEntities(String kind) throws LeanException {
         return RestService.getPrivateEntities(kind);
+    }
+
+
+    public static void delete(String kind, long entityId) throws LeanException {
+        RestService.deletePrivateEntity(kind, entityId);
+    }
+
+    public void delete() throws LeanException {
+        RestService.deletePrivateEntity(this.kind, this.id);
     }
 
     public Iterator<Map.Entry<String, Object>> getPropertiesIterator() {

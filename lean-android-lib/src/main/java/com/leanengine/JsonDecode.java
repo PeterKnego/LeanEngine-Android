@@ -8,6 +8,63 @@ import java.util.*;
 
 public class JsonDecode {
 
+    public static LeanAccount accountFromJson(JSONObject json) throws LeanException {
+
+        Long id;
+        try {
+            id = json.getLong("id");
+        } catch (JSONException e) {
+            throw new LeanException(LeanError.Error.JsonMissingField, " Entity JSON missing field 'id'.");
+        }
+
+        String providerId;
+        try {
+            providerId = json.getString("providerId");
+        } catch (JSONException e) {
+            throw new LeanException(LeanError.Error.JsonMissingField, " Entity JSON missing field 'providerId'.");
+        }
+
+        String nickName;
+        try {
+            nickName = json.getString("nickName");
+        } catch (JSONException e) {
+            throw new LeanException(LeanError.Error.JsonMissingField, " Entity JSON missing field 'nickName'.");
+        }
+
+        String provider;
+        try {
+            provider = json.getString("provider");
+        } catch (JSONException e) {
+            throw new LeanException(LeanError.Error.JsonMissingField, " Entity JSON missing field 'provider'.");
+        }
+
+        JSONObject jsonProviderProperties;
+        Map<String, Object> providerProperties;
+        try {
+            jsonProviderProperties = json.getJSONObject("providerProperties");
+            providerProperties = accountPropsFromJson(jsonProviderProperties);
+            return new LeanAccount(id, nickName, providerId, provider, providerProperties);
+        } catch (JSONException e) {
+            throw new LeanException(LeanError.Error.JsonMissingField, " Entity JSON missing field 'providerProperties'.");
+        }
+    }
+
+    private static Map<String, Object> accountPropsFromJson(JSONObject jsonNode) throws LeanException, JSONException {
+        Map<String, Object> props = new HashMap<String, Object>(jsonNode.length());
+
+        // must have some properties
+        if (jsonNode.length() == 0) throw new LeanException(LeanError.Error.JsonMissingField,
+                " JSON object 'providerProperties' must not be empty.");
+
+        Iterator fieldNames = jsonNode.keys();
+        while (fieldNames.hasNext()) {
+            String field = (String) fieldNames.next();
+            props.put(field, jsonNode.get(field));
+        }
+        return props;
+    }
+
+
     public static LeanEntity[] entityListFromJson(JSONObject json) throws LeanException {
         try {
             JSONArray array = json.getJSONArray("result");
@@ -26,21 +83,21 @@ public class JsonDecode {
 
         String kind;
         try {
-             kind = json.getString("_kind");
+            kind = json.getString("_kind");
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.JsonMissingFiled, " Entity JSON missing field '_kind'.");
+            throw new LeanException(LeanError.Error.JsonMissingField, " Entity JSON missing field '_kind'.");
         }
         Long id;
         try {
             id = json.getLong("_id");
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.JsonMissingFiled, " Entity JSON missing field '_id'.");
+            throw new LeanException(LeanError.Error.JsonMissingField, " Entity JSON missing field '_id'.");
         }
         Long accountId;
         try {
             accountId = json.getLong("_account");
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.JsonMissingFiled, " Entity JSON missing field '_account'.");
+            throw new LeanException(LeanError.Error.JsonMissingField, " Entity JSON missing field '_account'.");
         }
 
         LeanEntity entity = new LeanEntity(kind, id, accountId);
@@ -48,7 +105,7 @@ public class JsonDecode {
         try {
             entity.properties = entityPropertiesFromJson(json);
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ErrorParsingJSON, " "+e);
+            throw new LeanException(LeanError.Error.ErrorParsingJSON, " " + e);
         }
 
         return entity;
@@ -198,4 +255,6 @@ public class JsonDecode {
 //
 //        return query;
 //    }
+
+
 }

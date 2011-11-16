@@ -5,11 +5,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import com.leanengine.android.mainapp.tests.SimpleEntityTest;
+import android.widget.Toast;
+import com.leanengine.android.mainapp.tests.AccountTest;
+import com.leanengine.android.mainapp.tests.QueryTest;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
@@ -33,16 +36,35 @@ public class TestsActivity extends Activity {
     }
 
     private void allTests() {
-        TestSuite suite = new TestSuite();
 
-//        suite.addTest(new SimpleEntityTest("testCreateEntity"));
-//        suite.addTest(new SimpleEntityTest("testLoadEntity"));
-        suite.addTest(new SimpleEntityTest("testQueryEntity"));
-//        suite.addTest(new SimpleEntityTest("testDeleteEntity"));
+        AsyncTask<Void, Void, Void> testTask = new AsyncTask<Void, Void, Void>() {
 
-        TestResult results = new TestResult();
-        results.addListener(new BroadcastingTestListener(getApplication()));
-        suite.run(results);
+            @Override
+            protected Void doInBackground(Void... voids) {
+                TestSuite suite = new TestSuite();
+
+                suite.addTest(new AccountTest("accountNickName"));
+                suite.addTest(new QueryTest("createQueryEntities"));
+                suite.addTest(new QueryTest("queryEntities"));
+                suite.addTest(new QueryTest("deleteQueryEntities"));
+
+
+                TestResult results = new TestResult();
+                results.addListener(new BroadcastingTestListener(getApplication()));
+                suite.run(results);
+
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                Toast.makeText(TestsActivity.this, "Tests finished.", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        testTask.execute();
+
     }
 
     @Override
@@ -59,7 +81,7 @@ public class TestsActivity extends Activity {
                 final TextView text = (TextView) TestsActivity.this.findViewById(R.id.testsView);
                 if (event.equals("start")) {
                     text.append(testname);
-                }    else {
+                } else {
                     text.append(": " + event + "\n");
                 }
             }
