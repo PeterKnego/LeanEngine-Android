@@ -8,7 +8,6 @@
 
 package com.leanengine;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 
@@ -20,7 +19,7 @@ public class LeanEngine {
     private static Uri googleLoginUri;
     private static Uri yahooLoginUri;
     private static Context appContext;
-    private static LoginData loginData;
+    private static LoginResult loginResult;
 
     /**
      * Initializes the LeanEngine client.
@@ -37,27 +36,13 @@ public class LeanEngine {
         LeanEngine.appContext = context.getApplicationContext();
     }
 
-    public static LoginData getLoginData() {
-        return loginData;
-    }
-
-    public static LoginData handleLogin(Activity activity) {
-        // the URI that invoked the Activity - used when returning from browser login
-        Uri intentData = activity.getIntent().getData();
-        LoginData newLoginData = null;
-        if (intentData != null) {
-            newLoginData = LoginData.parse(intentData);
-            if (loginData == null && newLoginData != null) {
-                loginData = newLoginData;
-                return newLoginData;
-            }
-        }
-        return null;
+    public static LoginResult getLoginResult() {
+        return loginResult;
     }
 
     public static void setAuthData(String authToken){
          if(authToken!=null)
-           loginData = new LoginData(authToken);
+           loginResult = new LoginResult(authToken);
     }
 
     /**
@@ -97,7 +82,7 @@ public class LeanEngine {
     }
 
     protected static void resetLoginData() {
-        loginData = null;
+        loginResult = null;
         //todo must clear all caches
     }
 }

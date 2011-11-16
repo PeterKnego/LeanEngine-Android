@@ -13,16 +13,12 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TabHost;
-import com.leanengine.LeanEngine;
-import com.leanengine.LoginData;
 
 public class MainTabWidget extends TabActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        LoginData loginData = LeanEngine.handleLogin(this);
 
         Resources res = getResources(); // Resource object to get Drawables
         TabHost tabHost = getTabHost();  // The activity TabHost

@@ -18,7 +18,7 @@ public class LeanAccount {
     public String provider;
     public Map<String, Object> providerProperties;
 
-    public LeanAccount(Long id, String nickName, String providerId, String provider, Map<String, Object> providerProperties) {
+    protected LeanAccount(Long id, String nickName, String providerId, String provider, Map<String, Object> providerProperties) {
         this.id = id;
         this.nickName = nickName;
         this.providerId = providerId;
@@ -27,7 +27,8 @@ public class LeanAccount {
     }
 
     /**
-     * @return
+     * Logs user out of server. Current authentication tokens are removed on server and on client.
+     * @return Returns true if user was logged in and was logged out successfully.
      * @throws LeanException
      */
     public static Boolean logout() throws LeanException {
@@ -35,17 +36,28 @@ public class LeanAccount {
     }
 
     /**
-     * @return
+     * Logs user out of server. Current authentication tokens are removed on server and on client.
+     * Runs on the background thread.
+     * @param callback Callback to be invoked when logout finishes.
      * @throws LeanException
      */
     public static void logoutInBackground(NetworkCallback<Boolean> callback) {
         RestService.logoutAsync(callback);
     }
 
+    /**
+     * Checks if user is logged in.
+     * @return Returns true if user is logged in, false otherwise.
+     */
     public static boolean isLoggedIn() {
-        return LeanEngine.getLoginData() != null;
+        return LeanEngine.getLoginResult() != null;
     }
 
+    /**
+     * Gets current user account.
+     * @return LeanAccount of the currently logged-in user.
+     * @throws LeanException
+     */
     public static LeanAccount getCurrentAccount() throws LeanException {
         return RestService.getCurrentAccountData();
     }

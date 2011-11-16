@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.leanengine.*;
 
 public class LoginActivity extends Activity {
-    private static String DEFAULT_HOST_URL = "http://lean-engine.appspot.com";
+    private static String DEFAULT_HOST_URL = "http://demo.lean-engine.com";
 
 
     /**
