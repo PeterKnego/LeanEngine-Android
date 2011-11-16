@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.leanengine.android</groupId>
         <artifactId>project-parent</artifactId>
-        <version>0.1</version>
+        <version>0.8</version>
     </parent>
     <groupId>com.leanengine.android</groupId>
     <artifactId>lib</artifactId>
