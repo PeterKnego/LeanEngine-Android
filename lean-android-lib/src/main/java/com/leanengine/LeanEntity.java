@@ -13,6 +13,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * LeanEntity is a basic data unit that can be stored on the server. It can be saved, retrieved, deleted and queried.
+ * Entities can contain properties of various types: long, double, boolean, String and Date.
+ * <br/><br/>
+ * Future enhancements: new properties will be Entity reference, Blob, GeoPoint, Image..
+ * <br/><br/>
+ * Basic usage is to create a named entity via {@link #init(String)} method and then use  {@link #save()} to store it
+ * to server. Other methods are {@link #get(String)}, {@link #getAll(String)} and {@link #delete()}.
+ * <br/><br/>
+ * All method have their asynchronous counterparts, designated by added 'InBackground' to method name, which allow
+ * performing the method in the background thread.
+ */
 public class LeanEntity {
     protected final String kind;
     protected long id;
@@ -62,7 +74,7 @@ public class LeanEntity {
      * @throws IllegalArgumentException If parameter 'kind' is null
      * @throws LeanException            In case of authentication, network and data parsing errors.
      */
-    public static void getEntity(String kind, long id) throws LeanException, IllegalArgumentException {
+    public static void get(String kind, long id) throws LeanException, IllegalArgumentException {
         RestService.getPrivateEntity(kind, id);
     }
 
@@ -76,7 +88,7 @@ public class LeanEntity {
      * @param id       ID of the Entity
      * @param callback Callback to be invoked in case of result or error.
      */
-    public static void getEntityInBackground(String kind, long id, NetworkCallback<LeanEntity> callback) {
+    public static void getInBackground(String kind, long id, NetworkCallback<LeanEntity> callback) {
         RestService.getPrivateEntityAsync(kind, id, callback);
     }
 
@@ -87,19 +99,19 @@ public class LeanEntity {
      * @param kind     The kind of the Entities to be retrieved.
      * @param callback Callback to be invoked in case of result or error.
      */
-    public static void getAllEntitiesInBackground(String kind, NetworkCallback<LeanEntity> callback) {
+    public static void getAllInBackground(String kind, NetworkCallback<LeanEntity> callback) {
         RestService.getPrivateEntitiesAsync(kind, callback);
     }
 
     /**
-     * Retrieves from server all Entities of certain kind. Returns only entities belonging to current user account.
+     * Retrieves from server all Entities of certain kind. Returns only entities belonging to current user account (private).
      * This is a blocking operation - it block the execution of current thread until result is returned.
      *
      * @param kind The kind of the Entities to be retrieved.
      * @return An array of LeanEntity
      * @throws LeanException In case of authentication, network and data parsing errors.
      */
-    public static LeanEntity[] getAllEntities(String kind) throws LeanException {
+    public static LeanEntity[] getAll(String kind) throws LeanException {
         return RestService.getPrivateEntities(kind);
     }
 

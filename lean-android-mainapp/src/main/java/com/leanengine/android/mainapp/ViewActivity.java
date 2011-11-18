@@ -60,7 +60,7 @@ public class ViewActivity extends ListActivity {
     }
 
     private void loadEntities() {
-        LeanEntity.getAllEntitiesInBackground(null, new NetworkCallback<LeanEntity>() {
+        LeanEntity.getAllInBackground(null, new NetworkCallback<LeanEntity>() {
 
             @Override
             public void onResult(LeanEntity... result) {

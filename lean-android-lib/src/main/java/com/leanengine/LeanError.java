@@ -11,6 +11,12 @@ package com.leanengine;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Main error class containing all error codes.
+ *
+ * Errors can happen on server side, in which case error codes will be below 100.
+ * Client side generated errors have error codes above 100.
+ */
 public class LeanError {
 
     public enum Error {

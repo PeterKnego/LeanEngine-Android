@@ -12,6 +12,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Class to perform data queries against server datastore.
+ * <br/><br/>
+ * A simple example query would look like this:
+ * <br/>
+ *todo finish the example
+ *
+ */
 public class LeanQuery {
     private final String kind;
     private List<QueryFilter> filters = new ArrayList<QueryFilter>();
@@ -20,6 +28,10 @@ public class LeanQuery {
     private int limit = 20;
     private int offset = 0;
 
+    /**
+     * Constructor to initialize query.
+     * @param kind The kind (name) of entities to search for.
+     */
     public LeanQuery(String kind) {
         this.kind = kind;
     }
