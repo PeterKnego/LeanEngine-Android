@@ -121,7 +121,8 @@ public class LoginDialog extends Dialog {
                 String token = query.getValue("auth_token");
                 if (token != null) {
                     LoginDialog.this.dismiss();
-                    mListener.onSuccess(token);
+                    LeanEngine.saveAuthData(token);
+                    mListener.onSuccess();
                 } else {
                     String errorCode = query.getValue("errorcode");
                     String errorMsg = query.getValue("errormsg");

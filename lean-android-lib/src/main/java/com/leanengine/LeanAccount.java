@@ -49,8 +49,8 @@ public class LeanAccount {
      * Checks if user is logged in.
      * @return Returns true if user is logged in, false otherwise.
      */
-    public static boolean isLoggedIn() {
-        return LeanEngine.getLoginResult() != null;
+    public static boolean isTokenAvailable() {
+        return LeanEngine.getAuthToken() != null;
     }
 
     /**
@@ -58,7 +58,7 @@ public class LeanAccount {
      * @return LeanAccount of the currently logged-in user.
      * @throws LeanException
      */
-    public static LeanAccount getCurrentAccount() throws LeanException {
+    public static LeanAccount checkCurrentAccountIsValid() throws LeanException {
         return RestService.getCurrentAccountData();
     }
 }

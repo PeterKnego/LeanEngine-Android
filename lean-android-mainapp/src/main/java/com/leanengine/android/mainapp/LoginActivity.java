@@ -60,9 +60,8 @@ public class LoginActivity extends Activity {
 
                 LoginDialog fbDialog = new LoginDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
                     @Override
-                    public void onSuccess(String token) {
+                    public void onSuccess() {
                         Log.d("LoginDialog", "success!");
-                        LeanEngine.setAuthData(token);
                         checkLogin();
                     }
 
@@ -93,9 +92,8 @@ public class LoginActivity extends Activity {
 
                 LoginDialog fbDialog = new LoginDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
                     @Override
-                    public void onSuccess(String token) {
+                    public void onSuccess() {
                         Log.d("LoginDialog", "success!");
-                        LeanEngine.setAuthData(token);
                         checkLogin();
                     }
 
@@ -126,9 +124,8 @@ public class LoginActivity extends Activity {
 
                 LoginDialog fbDialog = new LoginDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
                     @Override
-                    public void onSuccess(String token) {
+                    public void onSuccess() {
                         Log.d("LoginDialog", "success!");
-                        LeanEngine.setAuthData(token);
                         checkLogin();
                     }
 
@@ -188,7 +185,7 @@ public class LoginActivity extends Activity {
 
     private void checkLogin() {
 
-        if (LeanAccount.isLoggedIn()) {
+        if (LeanAccount.isTokenAvailable()) {
             setContentView(R.layout.logout_layout);
             enableLogoutButton();
             MainTabWidget tabHost = (MainTabWidget) getParent();

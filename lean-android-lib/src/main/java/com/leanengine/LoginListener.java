@@ -10,7 +10,7 @@ package com.leanengine;
 
 public interface LoginListener {
 
-    public void onSuccess(String token);
+    public void onSuccess();
 
     public void onCancel();
 

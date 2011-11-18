@@ -9,6 +9,7 @@
 package com.leanengine;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 
 public class LeanEngine {
@@ -19,7 +20,7 @@ public class LeanEngine {
     private static Uri googleLoginUri;
     private static Uri yahooLoginUri;
     private static Context appContext;
-    private static LoginResult loginResult;
+    private static String authToken;
 
     /**
      * Initializes the LeanEngine client.
@@ -34,15 +35,17 @@ public class LeanEngine {
         LeanEngine.yahooLoginUri = Uri.parse(host + "/openid?provider=yahoo&type=mobile");
         LeanEngine.hostUri = Uri.parse(host);
         LeanEngine.appContext = context.getApplicationContext();
+
+        authToken = loadAuthToken();
     }
 
-    public static LoginResult getLoginResult() {
-        return loginResult;
+    public static String getAuthToken() {
+        return authToken;
     }
 
-    public static void setAuthData(String authToken){
-         if(authToken!=null)
-           loginResult = new LoginResult(authToken);
+    public static void saveAuthData(String authToken) {
+        LeanEngine.authToken = authToken;
+        saveAuthToken(authToken);
     }
 
     /**
@@ -78,11 +81,23 @@ public class LeanEngine {
     }
 
     public static Uri getOpenIdLoginUri(String provider) {
-        return Uri.parse(host + "/openid?provider="+provider+"&type=mobile");
+        return Uri.parse(host + "/openid?provider=" + provider + "&type=mobile");
     }
 
     protected static void resetLoginData() {
-        loginResult = null;
+        authToken = null;
         //todo must clear all caches
+    }
+
+    private static void saveAuthToken(String token) {
+        SharedPreferences preferences = appContext.getSharedPreferences("leanengine", 0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("_auth_token", token);
+        editor.commit();
+    }
+
+    private static String loadAuthToken() {
+        SharedPreferences preferences = appContext.getSharedPreferences("leanengine", 0);
+        return preferences.getString("_auth_token", null);
     }
 }

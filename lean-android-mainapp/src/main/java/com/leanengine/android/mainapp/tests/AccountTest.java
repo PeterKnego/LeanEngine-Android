@@ -21,7 +21,7 @@ public class AccountTest extends TestCase {
 
     public void accountNickName() {
         try {
-            LeanAccount currentAccount = LeanAccount.getCurrentAccount();
+            LeanAccount currentAccount = LeanAccount.checkCurrentAccountIsValid();
             Assert.assertNotNull(currentAccount);
             Assert.assertNotNull(currentAccount.nickName);
             Assert.assertNotNull(currentAccount.providerProperties);
