@@ -323,7 +323,7 @@ public class RestService {
             boolean result = resultFromJson(jsonObject);
 
             // after the request is made we must also clear local data
-            LeanEngine.resetLoginData();
+            LeanEngine.resetAuthenticationData();
             return result;
         } catch (IOException e) {
             throw new LeanException(LeanError.Error.ServerNotAccessible);

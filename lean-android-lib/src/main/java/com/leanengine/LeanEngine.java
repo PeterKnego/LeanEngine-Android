@@ -29,12 +29,17 @@ public class LeanEngine {
      * @param host    The path to the host server, i.e. 'http://demo.lean-engine.com'
      */
     public static void init(Context context, String host) {
+        LeanEngine.appContext = context.getApplicationContext();
+
+        if (LeanEngine.host != null && !host.equals(LeanEngine.host)) {
+            resetAuthenticationData();
+        }
+
         LeanEngine.host = host;
         LeanEngine.facebookLoginUri = Uri.parse(host + "/facebook?type=mobile");
         LeanEngine.googleLoginUri = Uri.parse(host + "/openid?provider=google&type=mobile");
         LeanEngine.yahooLoginUri = Uri.parse(host + "/openid?provider=yahoo&type=mobile");
         LeanEngine.hostUri = Uri.parse(host);
-        LeanEngine.appContext = context.getApplicationContext();
 
         authToken = loadAuthToken();
     }
@@ -84,11 +89,6 @@ public class LeanEngine {
         return Uri.parse(host + "/openid?provider=" + provider + "&type=mobile");
     }
 
-    protected static void resetLoginData() {
-        authToken = null;
-        //todo must clear all caches
-    }
-
     private static void saveAuthToken(String token) {
         SharedPreferences preferences = appContext.getSharedPreferences("leanengine", 0);
         SharedPreferences.Editor editor = preferences.edit();
@@ -96,8 +96,20 @@ public class LeanEngine {
         editor.commit();
     }
 
+    public static void resetAuthenticationData() {
+        authToken = null;
+        SharedPreferences preferences = appContext.getSharedPreferences("leanengine", 0);
+        if (preferences == null) return;
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove("_auth_token");
+        editor.commit();
+    }
+
     private static String loadAuthToken() {
         SharedPreferences preferences = appContext.getSharedPreferences("leanengine", 0);
+        if (preferences == null) return null;
         return preferences.getString("_auth_token", null);
     }
+
+
 }

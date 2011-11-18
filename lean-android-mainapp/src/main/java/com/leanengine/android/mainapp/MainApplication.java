@@ -8,12 +8,14 @@
 package com.leanengine.android.mainapp;
 
 import android.app.Application;
+import com.leanengine.LeanEngine;
 
 public class MainApplication extends Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
+        LeanEngine.init(this, "http://demo.lean-engine.com");
 
     }
 }
