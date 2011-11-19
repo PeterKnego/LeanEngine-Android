@@ -21,7 +21,7 @@ public class JsonEncode {
     protected static JSONObject entityToJson(LeanEntity entity) throws LeanException {
         try {
             JSONObject json = new JSONObject();
-            if (entity.id != 0)
+            if (entity.id != null)
                 json.put("_id", entity.id);
             json.put("_kind", entity.kind);
             // no need to put in '_account` as this is automatically set on server from current users accountID

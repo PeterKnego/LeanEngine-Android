@@ -55,18 +55,18 @@ public class RestService {
         return httpclient.execute(httpget, new RestResponseHandler());
     }
 
-    protected static LeanEntity getPrivateEntity(final String kind, final long id) throws LeanException, IllegalArgumentException {
+    protected static LeanEntity getPrivateEntity(final String kind, final Long id) throws LeanException, IllegalArgumentException {
         if (!LeanAccount.isTokenAvailable())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url;
-        if (kind != null) {
+        if (kind != null || id != null) {
             url = LeanEngine.getHostURI() +
                     "/rest/v1/entity/" + kind + "/" + id + "?lean_token=" +
                     LeanEngine.getAuthToken();
 
         } else {
-            throw new IllegalArgumentException("Parameter 'kind' must not be null.");
+            throw new IllegalArgumentException("Parameters 'kind' and 'id' must not be null.");
         }
         try {
             JSONObject jsonObject = doGet(url);
@@ -107,18 +107,18 @@ public class RestService {
     }
 
 
-    public static void deletePrivateEntity(String kind, long id) throws LeanException {
+    public static void deletePrivateEntity(String kind, Long id) throws LeanException {
         if (!LeanAccount.isTokenAvailable())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url;
-        if (kind != null) {
+        if (kind != null || id != null) {
             url = LeanEngine.getHostURI() +
                     "/rest/v1/entity/" + kind + "/" + id + "?lean_token=" +
                     LeanEngine.getAuthToken();
 
         } else {
-            throw new IllegalArgumentException("Parameter 'kind' must not be null.");
+            throw new IllegalArgumentException("Parameters 'kind' and 'id' must not be null.");
         }
         try {
             doDelete(url);
@@ -333,7 +333,7 @@ public class RestService {
     }
 
     public static void logoutAsync(final NetworkCallback<Boolean> callback) {
-       final RestAsyncTask<Boolean[]> aTask = new RestAsyncTask<Boolean[]>() {
+        final RestAsyncTask<Boolean[]> aTask = new RestAsyncTask<Boolean[]>() {
 
             // executes on background thread
             @Override
