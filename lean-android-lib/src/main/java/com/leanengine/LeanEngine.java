@@ -112,7 +112,7 @@ public class LeanEngine {
         editor.commit();
     }
 
-    private static void resetAuthToken() {
+    protected static void resetAuthToken() {
         authToken = null;
         SharedPreferences preferences = appContext.getSharedPreferences("leanengine", 0);
         if (preferences == null) return;
