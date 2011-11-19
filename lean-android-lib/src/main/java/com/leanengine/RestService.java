@@ -60,7 +60,7 @@ public class RestService {
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url;
-        if (kind != null || id != null) {
+        if (kind != null && id != null) {
             url = LeanEngine.getHostURI() +
                     "/rest/v1/entity/" + kind + "/" + id + "?lean_token=" +
                     LeanEngine.getAuthToken();
@@ -112,7 +112,7 @@ public class RestService {
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url;
-        if (kind != null || id != null) {
+        if (kind != null && id != null) {
             url = LeanEngine.getHostURI() +
                     "/rest/v1/entity/" + kind + "/" + id + "?lean_token=" +
                     LeanEngine.getAuthToken();
