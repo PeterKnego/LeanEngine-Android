@@ -1,3 +1,11 @@
+/*
+ * This software is released under the GNU Lesser General Public License v3.
+ * For more information see http://www.gnu.org/licenses/lgpl.html
+ *
+ * Copyright (c) 2011, Peter Knego & Matjaz Tercelj
+ * All rights reserved.
+ */
+
 package com.leanengine;
 
 import android.app.Dialog;
@@ -113,7 +121,8 @@ public class LoginDialog extends Dialog {
                 String token = query.getValue("auth_token");
                 if (token != null) {
                     LoginDialog.this.dismiss();
-                    mListener.onSuccess(token);
+                    LeanEngine.saveAuthData(token);
+                    mListener.onSuccess();
                 } else {
                     String errorCode = query.getValue("errorcode");
                     String errorMsg = query.getValue("errormsg");

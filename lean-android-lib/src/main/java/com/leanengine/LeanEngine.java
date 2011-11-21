@@ -1,7 +1,15 @@
+/*
+ * This software is released under the GNU Lesser General Public License v3.
+ * For more information see http://www.gnu.org/licenses/lgpl.html
+ *
+ * Copyright (c) 2011, Peter Knego & Matjaz Tercelj
+ * All rights reserved.
+ */
+
 package com.leanengine;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 
 public class LeanEngine {
@@ -12,7 +20,7 @@ public class LeanEngine {
     private static Uri googleLoginUri;
     private static Uri yahooLoginUri;
     private static Context appContext;
-    private static LoginData loginData;
+    private static String authToken;
 
     /**
      * Initializes the LeanEngine client.
@@ -27,29 +35,17 @@ public class LeanEngine {
         LeanEngine.yahooLoginUri = Uri.parse(host + "/openid?provider=yahoo&type=mobile");
         LeanEngine.hostUri = Uri.parse(host);
         LeanEngine.appContext = context.getApplicationContext();
+
+        authToken = loadAuthToken();
     }
 
-    public static LoginData getLoginData() {
-        return loginData;
+    public static String getAuthToken() {
+        return authToken;
     }
 
-    public static LoginData handleLogin(Activity activity) {
-        // the URI that invoked the Activity - used when returning from browser login
-        Uri intentData = activity.getIntent().getData();
-        LoginData newLoginData = null;
-        if (intentData != null) {
-            newLoginData = LoginData.parse(intentData);
-            if (loginData == null && newLoginData != null) {
-                loginData = newLoginData;
-                return newLoginData;
-            }
-        }
-        return null;
-    }
-
-    public static void setAuthData(String authToken){
-         if(authToken!=null)
-           loginData = new LoginData(authToken);
+    public static void saveAuthData(String authToken) {
+        LeanEngine.authToken = authToken;
+        saveAuthToken(authToken);
     }
 
     /**
@@ -85,11 +81,23 @@ public class LeanEngine {
     }
 
     public static Uri getOpenIdLoginUri(String provider) {
-        return Uri.parse(host + "/openid?provider="+provider+"&type=mobile");
+        return Uri.parse(host + "/openid?provider=" + provider + "&type=mobile");
     }
 
     protected static void resetLoginData() {
-        loginData = null;
+        authToken = null;
         //todo must clear all caches
+    }
+
+    private static void saveAuthToken(String token) {
+        SharedPreferences preferences = appContext.getSharedPreferences("leanengine", 0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("_auth_token", token);
+        editor.commit();
+    }
+
+    private static String loadAuthToken() {
+        SharedPreferences preferences = appContext.getSharedPreferences("leanengine", 0);
+        return preferences.getString("_auth_token", null);
     }
 }

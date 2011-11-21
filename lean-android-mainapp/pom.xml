@@ -2,15 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <groupId>com.leanengine.android</groupId>
+    <artifactId>mainapp</artifactId>
+    <packaging>apk</packaging>
+    <name>LeanEngine Android - Main App</name>
+
     <parent>
         <groupId>com.leanengine.android</groupId>
         <artifactId>project-parent</artifactId>
         <version>0.8</version>
     </parent>
-    <groupId>com.leanengine.android</groupId>
-    <artifactId>mainapp</artifactId>
-    <packaging>apk</packaging>
-    <name>LeanEngine Android - Main App</name>
 
     <dependencies>
         <dependency>
@@ -28,7 +29,7 @@
         <dependency>
             <groupId>com.leanengine.android</groupId>
             <artifactId>lib</artifactId>
-            <version>0.1</version>
+            <version>0.8</version>
             <type>apklib</type>
         </dependency>
 

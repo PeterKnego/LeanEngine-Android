@@ -1,3 +1,11 @@
+/*
+ * This software is released under the GNU Lesser General Public License v3.
+ * For more information see http://www.gnu.org/licenses/lgpl.html
+ *
+ * Copyright (c) 2011, Peter Knego & Matjaz Tercelj
+ * All rights reserved.
+ */
+
 package com.leanengine;
 
 import org.json.JSONArray;
@@ -10,7 +18,7 @@ import java.util.Map;
 
 public class JsonEncode {
 
-    public static JSONObject entityToJson(LeanEntity entity) throws LeanException {
+    protected static JSONObject entityToJson(LeanEntity entity) throws LeanException {
         try {
             JSONObject json = new JSONObject();
             if (entity.id != 0)
@@ -26,7 +34,7 @@ public class JsonEncode {
         }
     }
 
-    public static JSONObject entityListToJson(List<LeanEntity> entityList) throws LeanException {
+    protected static JSONObject entityListToJson(List<LeanEntity> entityList) throws LeanException {
         JSONObject rootNode = new JSONObject();
         JSONArray resultsArray = new JSONArray();
 
@@ -41,7 +49,7 @@ public class JsonEncode {
         return rootNode;
     }
 
-    public static JSONObject queryToJson(LeanQuery query) throws LeanException {
+    protected static JSONObject queryToJson(LeanQuery query) throws LeanException {
         JSONObject json = new JSONObject();
         try {
             json.put("kind", query.getKind());
@@ -74,7 +82,7 @@ public class JsonEncode {
         }
     }
 
-    public static void addTypedNode(JSONObject node, String key, Object value) throws LeanException, JSONException {
+    protected static void addTypedNode(JSONObject node, String key, Object value) throws LeanException, JSONException {
         if (value instanceof List) {
             List list = (List) value;
             JSONArray arrayNode = new JSONArray();

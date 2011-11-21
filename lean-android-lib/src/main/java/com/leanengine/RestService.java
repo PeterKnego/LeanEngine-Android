@@ -1,3 +1,11 @@
+/*
+ * This software is released under the GNU Lesser General Public License v3.
+ * For more information see http://www.gnu.org/licenses/lgpl.html
+ *
+ * Copyright (c) 2011, Peter Knego & Matjaz Tercelj
+ * All rights reserved.
+ */
+
 package com.leanengine;
 
 import android.os.AsyncTask;
@@ -48,14 +56,14 @@ public class RestService {
     }
 
     protected static LeanEntity getPrivateEntity(final String kind, final long id) throws LeanException, IllegalArgumentException {
-        if (LeanEngine.getLoginData() == null)
+        if (!LeanAccount.isTokenAvailable())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url;
         if (kind != null) {
             url = LeanEngine.getHostURI() +
                     "/rest/v1/entity/" + kind + "/" + id + "?lean_token=" +
-                    LeanEngine.getLoginData().getAuthToken();
+                    LeanEngine.getAuthToken();
 
         } else {
             throw new IllegalArgumentException("Parameter 'kind' must not be null.");
@@ -100,14 +108,14 @@ public class RestService {
 
 
     public static void deletePrivateEntity(String kind, long id) throws LeanException {
-        if (LeanEngine.getLoginData() == null)
+        if (!LeanAccount.isTokenAvailable())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url;
         if (kind != null) {
             url = LeanEngine.getHostURI() +
                     "/rest/v1/entity/" + kind + "/" + id + "?lean_token=" +
-                    LeanEngine.getLoginData().getAuthToken();
+                    LeanEngine.getAuthToken();
 
         } else {
             throw new IllegalArgumentException("Parameter 'kind' must not be null.");
@@ -153,18 +161,18 @@ public class RestService {
 
 
     protected static LeanEntity[] getPrivateEntities(final String kind) throws LeanException {
-        if (LeanEngine.getLoginData() == null)
+        if (!LeanAccount.isTokenAvailable())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url;
         if (kind != null) {
             url = LeanEngine.getHostURI() +
                     "/rest/v1/entity/" + kind + "?lean_token=" +
-                    LeanEngine.getLoginData().getAuthToken();
+                    LeanEngine.getAuthToken();
         } else {
             url = LeanEngine.getHostURI() +
                     "/rest/v1/entity?lean_token=" +
-                    LeanEngine.getLoginData().getAuthToken();
+                    LeanEngine.getAuthToken();
         }
 
         try {
@@ -205,12 +213,12 @@ public class RestService {
     }
 
     protected static long putPrivateEntity(final LeanEntity entity) throws LeanException {
-        if (LeanEngine.getLoginData() == null)
+        if (!LeanAccount.isTokenAvailable())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
         //todo externalize URLs (and token insertion)
         String url = LeanEngine.getHostURI() +
                 "/rest/v1/entity/" + entity.kind + "?lean_token=" +
-                LeanEngine.getLoginData().getAuthToken();
+                LeanEngine.getAuthToken();
         try {
             JSONObject param = JsonEncode.entityToJson(entity);
             JSONObject jsonObject = doPost(url, param);
@@ -251,12 +259,12 @@ public class RestService {
     }
 
     protected static LeanEntity[] queryPrivate(final LeanQuery query) throws LeanException {
-        if (LeanEngine.getLoginData() == null)
+        if (!LeanAccount.isTokenAvailable())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url = LeanEngine.getHostURI() +
                 "/rest/v1/query?lean_token=" +
-                LeanEngine.getLoginData().getAuthToken();
+                LeanEngine.getAuthToken();
 
         try {
             JSONObject queryJson = JsonEncode.queryToJson(query);
@@ -303,12 +311,12 @@ public class RestService {
     }
 
     protected static Boolean logout() throws LeanException {
-        if (LeanEngine.getLoginData() == null)
+        if (!LeanAccount.isTokenAvailable())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url = LeanEngine.getHostURI() +
                 "/rest/v1/public/logout?lean_token=" +
-                LeanEngine.getLoginData().getAuthToken();
+                LeanEngine.getAuthToken();
 
         try {
             JSONObject jsonObject = doGet(url);
@@ -353,12 +361,12 @@ public class RestService {
     }
 
     public static LeanAccount getCurrentAccountData() throws LeanException {
-        if (LeanEngine.getLoginData() == null)
+        if (!LeanAccount.isTokenAvailable())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url = LeanEngine.getHostURI() +
                 "/rest/v1/public/account?lean_token=" +
-                LeanEngine.getLoginData().getAuthToken();
+                LeanEngine.getAuthToken();
 
         try {
             JSONObject jsonObject = doGet(url);

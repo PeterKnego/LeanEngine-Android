@@ -1,3 +1,10 @@
+/*
+ * This software is released under the BSD license. For full license see License-library.txt file.
+ *
+ * Copyright (c) 2011, Peter Knego & Matjaz Tercelj
+ * All rights reserved.
+ */
+
 package com.leanengine.android.mainapp;
 
 import android.app.Activity;
@@ -13,7 +20,7 @@ import android.widget.Toast;
 import com.leanengine.*;
 
 public class LoginActivity extends Activity {
-    private static String DEFAULT_HOST_URL = "http://lean-engine.appspot.com";
+    private static String DEFAULT_HOST_URL = "http://demo.lean-engine.com";
 
 
     /**
@@ -53,9 +60,8 @@ public class LoginActivity extends Activity {
 
                 LoginDialog fbDialog = new LoginDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
                     @Override
-                    public void onSuccess(String token) {
+                    public void onSuccess() {
                         Log.d("LoginDialog", "success!");
-                        LeanEngine.setAuthData(token);
                         checkLogin();
                     }
 
@@ -86,9 +92,8 @@ public class LoginActivity extends Activity {
 
                 LoginDialog fbDialog = new LoginDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
                     @Override
-                    public void onSuccess(String token) {
+                    public void onSuccess() {
                         Log.d("LoginDialog", "success!");
-                        LeanEngine.setAuthData(token);
                         checkLogin();
                     }
 
@@ -119,9 +124,8 @@ public class LoginActivity extends Activity {
 
                 LoginDialog fbDialog = new LoginDialog(LoginActivity.this, loginUri.toString(), new LoginListener() {
                     @Override
-                    public void onSuccess(String token) {
+                    public void onSuccess() {
                         Log.d("LoginDialog", "success!");
-                        LeanEngine.setAuthData(token);
                         checkLogin();
                     }
 
@@ -181,7 +185,7 @@ public class LoginActivity extends Activity {
 
     private void checkLogin() {
 
-        if (LeanAccount.isLoggedIn()) {
+        if (LeanAccount.isTokenAvailable()) {
             setContentView(R.layout.logout_layout);
             enableLogoutButton();
             MainTabWidget tabHost = (MainTabWidget) getParent();

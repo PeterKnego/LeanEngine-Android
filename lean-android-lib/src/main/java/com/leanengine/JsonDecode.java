@@ -1,3 +1,11 @@
+/*
+ * This software is released under the GNU Lesser General Public License v3.
+ * For more information see http://www.gnu.org/licenses/lgpl.html
+ *
+ * Copyright (c) 2011, Peter Knego & Matjaz Tercelj
+ * All rights reserved.
+ */
+
 package com.leanengine;
 
 import org.json.JSONArray;
@@ -8,7 +16,7 @@ import java.util.*;
 
 public class JsonDecode {
 
-    public static LeanAccount accountFromJson(JSONObject json) throws LeanException {
+    protected static LeanAccount accountFromJson(JSONObject json) throws LeanException {
 
         Long id;
         try {
@@ -65,7 +73,7 @@ public class JsonDecode {
     }
 
 
-    public static LeanEntity[] entityListFromJson(JSONObject json) throws LeanException {
+    protected static LeanEntity[] entityListFromJson(JSONObject json) throws LeanException {
         try {
             JSONArray array = json.getJSONArray("result");
             LeanEntity[] result = new LeanEntity[array.length()];
@@ -79,7 +87,7 @@ public class JsonDecode {
         }
     }
 
-    public static LeanEntity entityFromJson(JSONObject json) throws LeanException {
+    protected static LeanEntity entityFromJson(JSONObject json) throws LeanException {
 
         String kind;
         try {
@@ -112,7 +120,7 @@ public class JsonDecode {
 
     }
 
-    public static Map<String, Object> entityPropertiesFromJson(JSONObject jsonNode) throws LeanException, JSONException {
+    protected static Map<String, Object> entityPropertiesFromJson(JSONObject jsonNode) throws LeanException, JSONException {
         Map<String, Object> props = new HashMap<String, Object>(jsonNode.length());
 
         // must have some properties
@@ -130,7 +138,7 @@ public class JsonDecode {
         return props;
     }
 
-    public static Object propertyFromJson(Object jsonNode) throws LeanException, JSONException {
+    protected static Object propertyFromJson(Object jsonNode) throws LeanException, JSONException {
         if (jsonNode instanceof JSONObject) {
             return typedObjectFromJson((JSONObject) jsonNode);
         } else if (jsonNode instanceof JSONArray) {

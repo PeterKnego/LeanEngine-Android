@@ -1,3 +1,10 @@
+/*
+ * This software is released under the BSD license. For full license see License-library.txt file.
+ *
+ * Copyright (c) 2011, Peter Knego & Matjaz Tercelj
+ * All rights reserved.
+ */
+
 package com.leanengine.android.mainapp;
 
 import android.app.Activity;
@@ -6,10 +13,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.leanengine.*;
-
-import java.util.HashMap;
-
+import com.leanengine.LeanEntity;
+import com.leanengine.LeanError;
+import com.leanengine.NetworkCallback;
 
 public class EditActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
@@ -45,10 +51,10 @@ public class EditActivity extends Activity {
                     entity.put(k3, v3);
                 }
 
-                if(entity.isEmpty()){
+                if (entity.isEmpty()) {
                     return;
                 }
-                
+
                 entity.saveInBackground(new NetworkCallback<Long>() {
                     @Override
                     public void onResult(Long... result) {
