@@ -10,7 +10,7 @@
 
     <modules>
         <module>lean-android-lib</module>
-        <module>lean-android-mainapp</module>
+        <module>lean-android-example</module>
     </modules>
 
     <properties>

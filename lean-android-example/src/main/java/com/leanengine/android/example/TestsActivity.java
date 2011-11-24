@@ -5,7 +5,7 @@
  * All rights reserved.
  */
 
-package com.leanengine.android.mainapp;
+package com.leanengine.android.example;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -18,8 +18,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.leanengine.android.mainapp.tests.AccountTest;
-import com.leanengine.android.mainapp.tests.QueryTest;
+import com.leanengine.android.example.tests.AccountTest;
+import com.leanengine.android.example.tests.QueryTest;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 

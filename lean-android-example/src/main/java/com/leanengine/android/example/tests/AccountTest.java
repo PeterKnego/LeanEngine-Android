@@ -5,7 +5,7 @@
  * All rights reserved.
  */
 
-package com.leanengine.android.mainapp.tests;
+package com.leanengine.android.example.tests;
 
 import android.util.Log;
 import com.leanengine.LeanAccount;

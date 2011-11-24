@@ -7,7 +7,6 @@
 */*.iws
 lean-android-lib/default.properties
 lean-android-lib/target/
-lean-android-mainapp/default.properties
-lean-android-mainapp/target/
-lean-android-tests/target/
+lean-android-example/default.properties
+lean-android-example/target/
 .DS_Store
