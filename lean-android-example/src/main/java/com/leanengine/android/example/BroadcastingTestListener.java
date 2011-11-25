@@ -28,7 +28,7 @@ public class BroadcastingTestListener implements TestListener {
         TestCase testCase = (TestCase) test;
         Intent intent = new Intent(action);
         intent.putExtra("event", "error");
-        intent.putExtra("test", test.getClass().getSimpleName()+"."+testCase.getName());
+        intent.putExtra("test", test.getClass().getSimpleName()+" "+testCase.getName());
         intent.putExtra("throwable", throwable.getMessage());
         context.sendBroadcast(intent);
     }
@@ -38,7 +38,7 @@ public class BroadcastingTestListener implements TestListener {
         TestCase testCase = (TestCase) test;
         Intent intent = new Intent(action);
         intent.putExtra("event", "failure");
-        intent.putExtra("test", test.getClass().getSimpleName()+"."+testCase.getName());
+        intent.putExtra("test", test.getClass().getSimpleName()+" "+testCase.getName());
         intent.putExtra("assertion", assertionFailedError.getMessage());
         context.sendBroadcast(intent);
     }
@@ -48,7 +48,7 @@ public class BroadcastingTestListener implements TestListener {
         TestCase testCase = (TestCase) test;
         Intent intent = new Intent(action);
         intent.putExtra("event", "done");
-        intent.putExtra("test", test.getClass().getSimpleName()+"."+testCase.getName());
+        intent.putExtra("test", test.getClass().getSimpleName()+" "+testCase.getName());
         context.sendBroadcast(intent);
     }
 
@@ -57,7 +57,7 @@ public class BroadcastingTestListener implements TestListener {
         TestCase testCase = (TestCase) test;
         Intent intent = new Intent(action);
         intent.putExtra("event", "start");
-        intent.putExtra("test", test.getClass().getSimpleName()+"."+testCase.getName());
+        intent.putExtra("test", test.getClass().getSimpleName()+" "+testCase.getName());
         context.sendBroadcast(intent);
     }
 }

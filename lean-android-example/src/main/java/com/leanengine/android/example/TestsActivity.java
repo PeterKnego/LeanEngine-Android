@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.leanengine.android.example.tests.AccountTest;
 import com.leanengine.android.example.tests.LongTextTest;
 import com.leanengine.android.example.tests.QueryTest;
+import com.leanengine.android.example.tests.UnicodeTest;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
@@ -51,14 +52,14 @@ public class TestsActivity extends Activity {
             protected Void doInBackground(Void... voids) {
                 TestSuite suite = new TestSuite();
 
-                suite.addTest(new AccountTest("accountNickName"));
-                suite.addTest(new QueryTest("queryTest"));
-                suite.addTest(new LongTextTest("longTextTest"));
+                suite.addTest(new AccountTest("account present"));
+                suite.addTest(new QueryTest("query test"));
+                suite.addTest(new LongTextTest("long text properties"));
+                suite.addTest(new UnicodeTest("unicode text properties"));
 
                 TestResult results = new TestResult();
                 results.addListener(new BroadcastingTestListener(getApplication()));
                 suite.run(results);
-
 
                 return null;
             }

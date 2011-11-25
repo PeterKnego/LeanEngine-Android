@@ -31,7 +31,8 @@ public class RestService {
         HttpClient httpclient = new DefaultHttpClient();
 
         HttpGet httpget = new HttpGet(uri);
-        httpget.addHeader("Content-Type", "application/json");
+        httpget.addHeader("Accept", "application/json");
+        httpget.addHeader("Accept-Charset", "UTF-8");
 
         return httpclient.execute(httpget, new RestResponseHandler());
     }
@@ -40,8 +41,10 @@ public class RestService {
         HttpClient httpclient = new DefaultHttpClient();
 
         HttpPost httpPost = new HttpPost(uri);
+        httpPost.addHeader("Accept", "application/json");
+        httpPost.addHeader("Accept-Charset", "UTF-8");
         httpPost.addHeader("Content-Type", "application/json");
-        httpPost.setEntity(new StringEntity(json.toString()));
+        httpPost.setEntity(new StringEntity(json.toString(), "UTF-8"));
 
         return httpclient.execute(httpPost, new RestResponseHandler());
     }
@@ -416,7 +419,7 @@ public class RestService {
             HttpEntity entity = response.getEntity();
             String result;
             try {
-                result = entity != null ? EntityUtils.toString(entity) : null;
+                result = entity != null ? EntityUtils.toString(entity, "UTF-8") : null;
             } catch (IOException e) {
                 throw new LeanException(LeanError.Error.ServerNotAccessible);
             }
