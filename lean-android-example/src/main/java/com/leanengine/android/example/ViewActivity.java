@@ -20,6 +20,7 @@ import com.leanengine.NetworkCallback;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 
 public class ViewActivity extends ListActivity {
@@ -116,14 +117,13 @@ public class ViewActivity extends ListActivity {
         }
 
         private String getPropertiesString(LeanEntity entity) {
-            if (entity.getPropertiesIterator() == null) {
+            if (entity.getKeySet() == null) {
                 return "";
             } else {
                 StringBuilder builder = new StringBuilder();
-                Iterator<Map.Entry<String, Object>> iterator = entity.getPropertiesIterator();
-                while (iterator.hasNext()) {
-                    Map.Entry<String, Object> next = iterator.next();
-                    builder.append(next.getKey()).append(": ").append(next.getValue().toString()).append(" | ");
+                Set<String> keySet = entity.getKeySet();
+                for (String key : keySet) {
+                    builder.append(key).append(": ").append(entity.get(key).toString()).append(" | ");
                 }
 
                 return builder.substring(0, builder.length() - 2);

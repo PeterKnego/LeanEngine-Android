@@ -167,6 +167,8 @@ public class JsonDecode {
 
         if ("date".equals(type)) {
             return new Date(getLongFromValueNode("value", node));
+        } else if ("text".equals(type)) {
+            return new LeanText(getStringFromValueNode("value", node));
         } else if ("geopt".equals(type)) {
             throw new IllegalArgumentException("Value nodes of type 'geopt' are not yet implemented.");
         } else if ("geohash".equals(type)) {
@@ -175,8 +177,6 @@ public class JsonDecode {
             throw new IllegalArgumentException("Value nodes of type 'blob' are not yet implemented.");
         } else if ("shortblob".equals(type)) {
             throw new IllegalArgumentException("Value nodes of type 'shortblob' are not yet implemented.");
-        } else if ("text".equals(type)) {
-            throw new IllegalArgumentException("Value nodes of type 'text' are not yet implemented.");
         } else if ("reference".equals(type)) {
             throw new IllegalArgumentException("Value nodes of type 'reference' are not yet implemented.");
         } else {
@@ -188,6 +188,14 @@ public class JsonDecode {
     private static long getLongFromValueNode(String fieldName, JSONObject node) throws LeanException {
         try {
             return node.getLong(fieldName);
+        } catch (JSONException e) {
+            throw new LeanException(LeanError.Error.ValueToJSON, " Missing '" + fieldName + "' field.");
+        }
+    }
+
+    private static String getStringFromValueNode(String fieldName, JSONObject node) throws LeanException {
+        try {
+            return node.getString(fieldName);
         } catch (JSONException e) {
             throw new LeanException(LeanError.Error.ValueToJSON, " Missing '" + fieldName + "' field.");
         }

@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.leanengine.android.example.tests.AccountTest;
+import com.leanengine.android.example.tests.LongTextTest;
 import com.leanengine.android.example.tests.QueryTest;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
@@ -51,8 +52,8 @@ public class TestsActivity extends Activity {
                 TestSuite suite = new TestSuite();
 
                 suite.addTest(new AccountTest("accountNickName"));
-
                 suite.addTest(new QueryTest("queryTest"));
+                suite.addTest(new LongTextTest("longTextTest"));
 
                 TestResult results = new TestResult();
                 results.addListener(new BroadcastingTestListener(getApplication()));
@@ -68,7 +69,7 @@ public class TestsActivity extends Activity {
             }
         };
 
-        testTask.execute();
+        testTask.execute((Void)null);
 
     }
 
@@ -100,6 +101,5 @@ public class TestsActivity extends Activity {
         super.onStop();
         unregisterReceiver(receiver);
     }
-
 
 }

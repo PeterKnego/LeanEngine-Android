@@ -10,8 +10,8 @@ package com.leanengine;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * LeanEntity is a basic data unit that can be stored on the server. It can be saved, retrieved, deleted and queried.
@@ -83,13 +83,14 @@ public class LeanEntity {
      *
      * @param kind The kind of the Entity to be retrieved.
      * @param id   ID of the Entity
-     * @throws IllegalArgumentException If parameter 'kind' is null
-     * @throws LeanException            In case of authentication, network and data parsing errors.
+     * @return Returns LeanEntity saved under the given {@code id} and of given {@code kind}.
+     * @throws IllegalArgumentException If parameter {@code id} or {@code kind} is null.
+     * @throws LeanException            If entity could not be found or in case of authentication, network and data
+     * parsing errors.
      */
-    public static void get(String kind, long id) throws LeanException, IllegalArgumentException {
-        RestService.getPrivateEntity(kind, id);
+    public static LeanEntity get(String kind, long id) throws LeanException, IllegalArgumentException {
+        return RestService.getPrivateEntity(kind, id);
     }
-
 
     /**
      * Retrieves from server an entities of certain kind and ID.
@@ -145,21 +146,12 @@ public class LeanEntity {
     }
 
     /**
-     * Returns an iterator of entity properties.
+     * Returns a {@link Set} of properties' keys .
      *
-     * @return Iterator over properties.
+     * @return {@link Set} of properties' keys.
      */
-    public Iterator<Map.Entry<String, Object>> getPropertiesIterator() {
-        return properties.entrySet().iterator();
-    }
-
-    /**
-     * Returns the entity properties map.
-     *
-     * @return Map of entity properties.
-     */
-    public Map<String, Object> getProperties() {
-        return properties;
+    public Set<String> getKeySet() {
+        return properties.keySet();
     }
 
     /**
@@ -179,6 +171,8 @@ public class LeanEntity {
     /**
      * Returns the user account ID that this entity belongs to.
      * Account ID is only available for entities retrieved from server.
+     *
+     * @return ID of the account this entity belongs to. {@code Null} if entity was not retrieved from server.
      */
     public Long getAccountID() {
         return accountID;
@@ -210,6 +204,20 @@ public class LeanEntity {
     public String getString(String key) {
         Object val = properties.get(key);
         return (val != null && val.getClass() == String.class) ? (String) val : null;
+    }
+
+    /**
+     * Gets the property with the specified key.
+     * {@code Null} is returned if key does not exist or if property is not of type {@link String}.
+     * <br/><br/>
+     * This method is to be used to retrieve properties that were saved via {@link #putText(String, String)}.
+     *
+     * @param key Key under which property was stored.
+     * @return Value of property or {@code null} if key does not exist or if property is not of type {@link String}.
+     */
+    public String getText(String key) {
+        Object val = properties.get(key);
+        return (val != null && val.getClass() == LeanText.class) ? ((LeanText) val).getValue() : null;
     }
 
     /**
@@ -277,7 +285,7 @@ public class LeanEntity {
      * <br/><br/>
      * Vales are internally converted to types supported by LeanEngine server: //todo insert LE Docs link here
      *
-     * @param key Key under which property will be stored.
+     * @param key   Key under which property will be stored.
      * @param value {@link long} value to be stored.
      */
     public void put(String key, long value) {
@@ -289,7 +297,7 @@ public class LeanEntity {
      * <br/><br/>
      * Vales are internally converted to types supported by LeanEngine server: //todo insert LE Docs link here
      *
-     * @param key Key under which property will be stored.
+     * @param key   Key under which property will be stored.
      * @param value {@link double} value to be stored.
      */
     public void put(String key, double value) {
@@ -299,27 +307,75 @@ public class LeanEntity {
     /**
      * Sets the property with given {@code key} to {@code value}.
      * <br/><br/>
-     * Vales are internally converted to types supported by LeanEngine server: //todo insert LE Docs link here
+     * Value is stored on server as short string value, which can be indexed (via server configuration) and can be
+     * used in queries.
+     * <br/><br/>
+     * {@code Value} must be shorter that 500 Unicode characters. Use {@link #putText(String, String)} if longer
+     * string values need to be stored.
      *
-     * @param key Key under which property will be stored.
+     * @param key   Key under which property will be stored.
      * @param value {@link String} value to be stored.
+     * @throws IllegalArgumentException If {@code value} is longer that 500 Unicode characters.
      */
-    public void put(String key, String value) {
+    public void put(String key, String value) throws IllegalArgumentException {
+        if (value.length() >= 500) {
+            throw new IllegalArgumentException("Value to be stored is too long. Max 500 chars.");
+        }
         properties.put(key, value);
     }
 
+    /**
+     * Sets the property with given {@code key} to {@code value}.
+     * <br/><br/>
+     * This method supports saving String values that are longer that 500 Unicode characters.
+     * Property will be saved on the server as an unindexed text value, meaning that it can not be used in queries.
+     *
+     * @param key   Key under which property will be stored.
+     * @param value {@link String} value to be stored.
+     */
+    public void putText(String key, String value) {
+        properties.put(key, new LeanText(value));
+    }
+
+    /**
+     * Sets the property with given {@code key} to {@code value}.
+     * <br/><br/>
+     * Vales are internally converted to types supported by LeanEngine server: //todo insert LE Docs link here
+     *
+     * @param key   Key under which property will be stored.
+     * @param value {@link Date} value to be stored.
+     */
     public void put(String key, Date value) {
         properties.put(key, value);
     }
 
+    /**
+     * Sets the property with given {@code key} to {@code value}.
+     * <br/><br/>
+     * Vales are internally converted to types supported by LeanEngine server: //todo insert LE Docs link here
+     *
+     * @param key   Key under which property will be stored.
+     * @param value {@link boolean} value to be stored.
+     */
     public void put(String key, boolean value) {
         properties.put(key, value);
     }
 
-    public boolean containsKey(String key) {
+    /**
+     * Checks if property with given {@code key} exists.
+     *
+     * @param key Key of the property.
+     * @return {@code True} if property exists, {@code false} otherwise.
+     */
+    public boolean hasProperty(String key) {
         return properties.containsKey(key);
     }
 
+    /**
+     * Checks if entity contains any properties.
+     *
+     * @return {@code True} if entity is empty, i.e. contains no properties, {@code false} otherwise.
+     */
     public boolean isEmpty() {
         return properties.isEmpty();
     }
