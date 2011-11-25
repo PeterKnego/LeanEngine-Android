@@ -51,10 +51,8 @@ public class TestsActivity extends Activity {
                 TestSuite suite = new TestSuite();
 
                 suite.addTest(new AccountTest("accountNickName"));
-                suite.addTest(new QueryTest("createQueryEntities"));
-                suite.addTest(new QueryTest("queryEntities"));
-                suite.addTest(new QueryTest("deleteQueryEntities"));
 
+                suite.addTest(new QueryTest("queryTest"));
 
                 TestResult results = new TestResult();
                 results.addListener(new BroadcastingTestListener(getApplication()));

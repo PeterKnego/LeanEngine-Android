@@ -38,6 +38,7 @@ public class LeanError {
         RestTaskInterrupted(125, "REST background task was interrupted"),
         CreatingJsonError(126, "Error adding property to JSON object."),
         JsonMissingField(127, "JSON missing required field."),
+        ServerErrorResponse(128, "Server returned error."),
 
         // server errors have codes below 100
         // they happen when server has problems fulfilling request

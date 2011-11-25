@@ -46,13 +46,13 @@ public class RestService {
         return httpclient.execute(httpPost, new RestResponseHandler());
     }
 
-    private static JSONObject doDelete(String uri) throws IOException {
+    private static void doDelete(String uri) throws IOException {
         HttpClient httpclient = new DefaultHttpClient();
 
         HttpDelete httpget = new HttpDelete(uri);
         httpget.addHeader("Content-Type", "application/json");
 
-        return httpclient.execute(httpget, new RestResponseHandler());
+        httpclient.execute(httpget, new DeleteResponseHandler());
     }
 
     protected static LeanEntity getPrivateEntity(final String kind, final Long id) throws LeanException, IllegalArgumentException {
@@ -116,10 +116,10 @@ public class RestService {
             url = LeanEngine.getHostURI() +
                     "/rest/v1/entity/" + kind + "/" + id + "?lean_token=" +
                     LeanEngine.getAuthToken();
-
         } else {
             throw new IllegalArgumentException("Parameters 'kind' and 'id' must not be null.");
         }
+
         try {
             doDelete(url);
         } catch (IOException e) {
@@ -158,7 +158,6 @@ public class RestService {
         aTask.execute((Void) null);
 
     }
-
 
     protected static LeanEntity[] getPrivateEntities(final String kind) throws LeanException {
         if (!LeanAccount.isTokenAvailable())
@@ -437,6 +436,21 @@ public class RestService {
             }
         }
     }
+
+    protected static class DeleteResponseHandler implements ResponseHandler<Void> {
+
+        @Override
+        public Void handleResponse(HttpResponse response) throws LeanException {
+            StatusLine statusLine = response.getStatusLine();
+
+            if (statusLine.getStatusCode() >= 300) {
+                throw new LeanException(LeanError.Error.ServerErrorResponse);
+            }
+
+            return null;
+        }
+    }
+
 
     private static Long idFromJson(JSONObject json) throws JSONException {
         return json.getLong("id");

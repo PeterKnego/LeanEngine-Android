@@ -29,6 +29,13 @@ public class QueryTest extends TestCase {
         super(name);
     }
 
+    @Override
+    protected void runTest() {
+        createQueryEntities();
+        queryEntities();
+        deleteQueryEntities();
+    }
+
     public void createQueryEntities() {
         long entitiyID;
 
