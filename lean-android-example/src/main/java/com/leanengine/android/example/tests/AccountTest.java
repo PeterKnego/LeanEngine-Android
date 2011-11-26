@@ -5,7 +5,7 @@
  * All rights reserved.
  */
 
-package com.leanengine.android.mainapp.tests;
+package com.leanengine.android.example.tests;
 
 import android.util.Log;
 import com.leanengine.LeanAccount;
@@ -19,6 +19,11 @@ public class AccountTest extends TestCase {
         super(name);
     }
 
+    @Override
+    protected void runTest() {
+        accountNickName();
+    }
+
     public void accountNickName() {
         try {
             LeanAccount currentAccount = LeanAccount.checkCurrentAccountIsValid();
@@ -27,8 +32,8 @@ public class AccountTest extends TestCase {
             Assert.assertNotNull(currentAccount.providerProperties);
             Assert.assertTrue(!currentAccount.providerProperties.isEmpty());
         } catch (LeanException e) {
-            Assert.assertTrue(false);
             Log.e("AccountTest", "error:" + e.getError().getErrorCode() + " msg:" + e.getError().getErrorMessage());
+            Assert.assertTrue(false);
         }
     }
 

@@ -5,7 +5,7 @@
  * All rights reserved.
  */
 
-package com.leanengine.android.mainapp;
+package com.leanengine.android.example;
 
 import android.app.TabActivity;
 import android.content.Intent;

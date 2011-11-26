@@ -12,6 +12,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
+/**
+ * Main LeanEngine application context class, containing application-wide (singletons) data.
+ * The {@link #init(android.content.Context, String)} must be called before using any other LeanEngine client functions.
+ */
 public class LeanEngine {
 
     private static String host;
@@ -23,29 +27,46 @@ public class LeanEngine {
     private static String authToken;
 
     /**
-     * Initializes the LeanEngine client.
+     * Initializes the LeanEngine client. Must be called before using other LeanEngine functions.
      *
      * @param context Android Context.
      * @param host    The path to the host server, i.e. 'http://demo.lean-engine.com'
      */
     public static void init(Context context, String host) {
+        LeanEngine.appContext = context.getApplicationContext();
+
+        if (LeanEngine.host != null && !host.equals(LeanEngine.host)) {
+            resetAuthToken();
+        }
+
         LeanEngine.host = host;
         LeanEngine.facebookLoginUri = Uri.parse(host + "/facebook?type=mobile");
         LeanEngine.googleLoginUri = Uri.parse(host + "/openid?provider=google&type=mobile");
         LeanEngine.yahooLoginUri = Uri.parse(host + "/openid?provider=yahoo&type=mobile");
         LeanEngine.hostUri = Uri.parse(host);
-        LeanEngine.appContext = context.getApplicationContext();
 
         authToken = loadAuthToken();
     }
 
+    /**
+     * Returns currently used authentication token as set via {@link LeanEngine#storeAuthTokenToPreferences(String)}.
+     * This token is internally saved in app preferences and survives app restarts.
+     * <br/><br/>
+     * It is used to authenticate against server.
+     * Token might be expired - this can be checked via {@link com.leanengine.LeanAccount#checkCurrentAccountIsValid()}.
+     * @return Authentication token as provided by server when authentication procedure is successfully completed.
+     */
     public static String getAuthToken() {
         return authToken;
     }
 
-    public static void saveAuthData(String authToken) {
+    /**
+     * Saves authentication token to app preferences.
+     * @param authToken Authentication token acquired via authentication flow.
+     */
+    protected static void saveAuthData(String authToken) {
         LeanEngine.authToken = authToken;
-        saveAuthToken(authToken);
+        storeAuthTokenToPreferences(authToken);
     }
 
     /**
@@ -84,20 +105,27 @@ public class LeanEngine {
         return Uri.parse(host + "/openid?provider=" + provider + "&type=mobile");
     }
 
-    protected static void resetLoginData() {
-        authToken = null;
-        //todo must clear all caches
-    }
-
-    private static void saveAuthToken(String token) {
+    private static void storeAuthTokenToPreferences(String token) {
         SharedPreferences preferences = appContext.getSharedPreferences("leanengine", 0);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("_auth_token", token);
         editor.commit();
     }
 
+    protected static void resetAuthToken() {
+        authToken = null;
+        SharedPreferences preferences = appContext.getSharedPreferences("leanengine", 0);
+        if (preferences == null) return;
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove("_auth_token");
+        editor.commit();
+    }
+
     private static String loadAuthToken() {
         SharedPreferences preferences = appContext.getSharedPreferences("leanengine", 0);
+        if (preferences == null) return null;
         return preferences.getString("_auth_token", null);
     }
+
+
 }

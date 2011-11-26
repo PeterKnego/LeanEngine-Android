@@ -31,7 +31,8 @@ public class RestService {
         HttpClient httpclient = new DefaultHttpClient();
 
         HttpGet httpget = new HttpGet(uri);
-        httpget.addHeader("Content-Type", "application/json");
+        httpget.addHeader("Accept", "application/json");
+        httpget.addHeader("Accept-Charset", "UTF-8");
 
         return httpclient.execute(httpget, new RestResponseHandler());
     }
@@ -40,33 +41,35 @@ public class RestService {
         HttpClient httpclient = new DefaultHttpClient();
 
         HttpPost httpPost = new HttpPost(uri);
+        httpPost.addHeader("Accept", "application/json");
+        httpPost.addHeader("Accept-Charset", "UTF-8");
         httpPost.addHeader("Content-Type", "application/json");
-        httpPost.setEntity(new StringEntity(json.toString()));
+        httpPost.setEntity(new StringEntity(json.toString(), "UTF-8"));
 
         return httpclient.execute(httpPost, new RestResponseHandler());
     }
 
-    private static JSONObject doDelete(String uri) throws IOException {
+    private static void doDelete(String uri) throws IOException {
         HttpClient httpclient = new DefaultHttpClient();
 
         HttpDelete httpget = new HttpDelete(uri);
         httpget.addHeader("Content-Type", "application/json");
 
-        return httpclient.execute(httpget, new RestResponseHandler());
+        httpclient.execute(httpget, new DeleteResponseHandler());
     }
 
-    protected static LeanEntity getPrivateEntity(final String kind, final long id) throws LeanException, IllegalArgumentException {
+    protected static LeanEntity getPrivateEntity(final String kind, final Long id) throws LeanException, IllegalArgumentException {
         if (!LeanAccount.isTokenAvailable())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url;
-        if (kind != null) {
+        if (kind != null && id != null) {
             url = LeanEngine.getHostURI() +
                     "/rest/v1/entity/" + kind + "/" + id + "?lean_token=" +
                     LeanEngine.getAuthToken();
 
         } else {
-            throw new IllegalArgumentException("Parameter 'kind' must not be null.");
+            throw new IllegalArgumentException("Parameters 'kind' and 'id' must not be null.");
         }
         try {
             JSONObject jsonObject = doGet(url);
@@ -107,19 +110,19 @@ public class RestService {
     }
 
 
-    public static void deletePrivateEntity(String kind, long id) throws LeanException {
+    public static void deletePrivateEntity(String kind, Long id) throws LeanException {
         if (!LeanAccount.isTokenAvailable())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url;
-        if (kind != null) {
+        if (kind != null && id != null) {
             url = LeanEngine.getHostURI() +
                     "/rest/v1/entity/" + kind + "/" + id + "?lean_token=" +
                     LeanEngine.getAuthToken();
-
         } else {
-            throw new IllegalArgumentException("Parameter 'kind' must not be null.");
+            throw new IllegalArgumentException("Parameters 'kind' and 'id' must not be null.");
         }
+
         try {
             doDelete(url);
         } catch (IOException e) {
@@ -158,7 +161,6 @@ public class RestService {
         aTask.execute((Void) null);
 
     }
-
 
     protected static LeanEntity[] getPrivateEntities(final String kind) throws LeanException {
         if (!LeanAccount.isTokenAvailable())
@@ -323,7 +325,7 @@ public class RestService {
             boolean result = resultFromJson(jsonObject);
 
             // after the request is made we must also clear local data
-            LeanEngine.resetLoginData();
+            LeanEngine.resetAuthToken();
             return result;
         } catch (IOException e) {
             throw new LeanException(LeanError.Error.ServerNotAccessible);
@@ -333,7 +335,7 @@ public class RestService {
     }
 
     public static void logoutAsync(final NetworkCallback<Boolean> callback) {
-       final RestAsyncTask<Boolean[]> aTask = new RestAsyncTask<Boolean[]>() {
+        final RestAsyncTask<Boolean[]> aTask = new RestAsyncTask<Boolean[]>() {
 
             // executes on background thread
             @Override
@@ -417,7 +419,7 @@ public class RestService {
             HttpEntity entity = response.getEntity();
             String result;
             try {
-                result = entity != null ? EntityUtils.toString(entity) : null;
+                result = entity != null ? EntityUtils.toString(entity, "UTF-8") : null;
             } catch (IOException e) {
                 throw new LeanException(LeanError.Error.ServerNotAccessible);
             }
@@ -437,6 +439,21 @@ public class RestService {
             }
         }
     }
+
+    protected static class DeleteResponseHandler implements ResponseHandler<Void> {
+
+        @Override
+        public Void handleResponse(HttpResponse response) throws LeanException {
+            StatusLine statusLine = response.getStatusLine();
+
+            if (statusLine.getStatusCode() >= 300) {
+                throw new LeanException(LeanError.Error.ServerErrorResponse);
+            }
+
+            return null;
+        }
+    }
+
 
     private static Long idFromJson(JSONObject json) throws JSONException {
         return json.getLong("id");

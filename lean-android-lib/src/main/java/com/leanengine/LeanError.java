@@ -11,6 +11,12 @@ package com.leanengine;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Main error class containing all error codes.
+ *
+ * Errors can happen on server side, in which case error codes will be below 100.
+ * Client side generated errors have error codes above 100.
+ */
 public class LeanError {
 
     public enum Error {
@@ -32,6 +38,7 @@ public class LeanError {
         RestTaskInterrupted(125, "REST background task was interrupted"),
         CreatingJsonError(126, "Error adding property to JSON object."),
         JsonMissingField(127, "JSON missing required field."),
+        ServerErrorResponse(128, "Server returned error."),
 
         // server errors have codes below 100
         // they happen when server has problems fulfilling request

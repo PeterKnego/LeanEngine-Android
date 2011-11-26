@@ -21,7 +21,7 @@ public class JsonEncode {
     protected static JSONObject entityToJson(LeanEntity entity) throws LeanException {
         try {
             JSONObject json = new JSONObject();
-            if (entity.id != 0)
+            if (entity.id != null)
                 json.put("_id", entity.id);
             json.put("_kind", entity.kind);
             // no need to put in '_account` as this is automatically set on server from current users accountID
@@ -98,6 +98,8 @@ public class JsonEncode {
     private static void addTypedValueToArray(JSONArray node, Object value) throws JSONException {
         if (value instanceof Date) {
             node.put(getDateNode((Date) value));
+        } else if (value instanceof LeanText) {
+            node.put(getLeanTextNode((LeanText) value));
         } else {
             node.put(value);
         }
@@ -106,6 +108,8 @@ public class JsonEncode {
     private static void addTypedValue(JSONObject node, String key, Object value) throws JSONException {
         if (value instanceof Date) {
             node.put(key, getDateNode((Date) value));
+        } else if (value instanceof LeanText) {
+            node.put(key, getLeanTextNode((LeanText) value));
         } else {
             node.put(key, value);
         }
@@ -115,6 +119,13 @@ public class JsonEncode {
         JSONObject dateNode = new JSONObject();
         dateNode.put("type", "date");
         dateNode.put("value", date.getTime());
+        return dateNode;
+    }
+
+    private static JSONObject getLeanTextNode(LeanText text) throws JSONException {
+        JSONObject dateNode = new JSONObject();
+        dateNode.put("type", "text");
+        dateNode.put("value", text.getValue());
         return dateNode;
     }
 }

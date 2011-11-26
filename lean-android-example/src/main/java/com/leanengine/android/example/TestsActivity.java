@@ -5,7 +5,7 @@
  * All rights reserved.
  */
 
-package com.leanengine.android.mainapp;
+package com.leanengine.android.example;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -18,8 +18,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.leanengine.android.mainapp.tests.AccountTest;
-import com.leanengine.android.mainapp.tests.QueryTest;
+import com.leanengine.android.example.tests.AccountTest;
+import com.leanengine.android.example.tests.LongTextTest;
+import com.leanengine.android.example.tests.QueryTest;
+import com.leanengine.android.example.tests.UnicodeTest;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
@@ -50,16 +52,14 @@ public class TestsActivity extends Activity {
             protected Void doInBackground(Void... voids) {
                 TestSuite suite = new TestSuite();
 
-                suite.addTest(new AccountTest("accountNickName"));
-                suite.addTest(new QueryTest("createQueryEntities"));
-                suite.addTest(new QueryTest("queryEntities"));
-                suite.addTest(new QueryTest("deleteQueryEntities"));
-
+                suite.addTest(new AccountTest("account present"));
+                suite.addTest(new QueryTest("query test"));
+                suite.addTest(new LongTextTest("long text properties"));
+                suite.addTest(new UnicodeTest("unicode text properties"));
 
                 TestResult results = new TestResult();
                 results.addListener(new BroadcastingTestListener(getApplication()));
                 suite.run(results);
-
 
                 return null;
             }
@@ -70,7 +70,7 @@ public class TestsActivity extends Activity {
             }
         };
 
-        testTask.execute();
+        testTask.execute((Void)null);
 
     }
 
@@ -102,6 +102,5 @@ public class TestsActivity extends Activity {
         super.onStop();
         unregisterReceiver(receiver);
     }
-
 
 }

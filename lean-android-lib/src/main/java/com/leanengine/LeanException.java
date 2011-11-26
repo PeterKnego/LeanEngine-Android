@@ -10,6 +10,9 @@ package com.leanengine;
 
 import java.io.IOException;
 
+/**
+ * Exception wrapping the {@link LeanError}.
+ */
 public class LeanException extends IOException {
 
     private LeanError error;

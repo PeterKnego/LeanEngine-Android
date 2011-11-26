@@ -5,7 +5,7 @@
  * All rights reserved.
  */
 
-package com.leanengine.android.mainapp.tests;
+package com.leanengine.android.example.tests;
 
 import android.util.Log;
 import com.leanengine.LeanEntity;
@@ -27,6 +27,13 @@ public class QueryTest extends TestCase {
 
     public QueryTest(String name) {
         super(name);
+    }
+
+    @Override
+    protected void runTest() {
+        createQueryEntities();
+        queryEntities();
+        deleteQueryEntities();
     }
 
     public void createQueryEntities() {
