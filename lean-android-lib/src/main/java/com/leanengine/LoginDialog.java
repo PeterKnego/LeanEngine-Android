@@ -13,7 +13,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.UrlQuerySanitizer;
 import android.os.Bundle;
 import android.view.View;
@@ -22,10 +21,9 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import com.leanengine.android.lib.R;
 
 public class LoginDialog extends Dialog {
 
@@ -37,9 +35,11 @@ public class LoginDialog extends Dialog {
     private String mUrl;
     private LoginListener mListener;
     private ProgressDialog mSpinner;
-    private ImageView mCrossImage;
+    private Button cancelButton;
     private WebView mWebView;
-    private FrameLayout mContent;
+    private FrameLayout frameLayout;
+    private LinearLayout content;
+    private LinearLayout buttonContainer;
 
     public LoginDialog(Context context, String url, LoginListener listener) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
@@ -55,43 +55,41 @@ public class LoginDialog extends Dialog {
         mSpinner.setMessage("Loading...");
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mContent = new FrameLayout(getContext());
+        frameLayout = new FrameLayout(getContext());
+        content = new LinearLayout(getContext());
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setLayoutParams(FILL);
 
-        /* Create the 'x' image, but don't add to the mContent layout yet
-         * at this point, we only need to know its drawable width and height
-         * to place the webview
-         */
-        createCrossImage();
+        createCancelButton();
 
-        /* Now we know 'x' drawable width and height,
-         * layout the webivew and add it the mContent layout
-         */
-        int crossWidth = mCrossImage.getDrawable().getIntrinsicWidth();
-        setUpWebView(crossWidth / 2);
+        setUpWebView(0);
 
-        /* Finally add the 'x' image to the mContent layout and
-         * add mContent to the Dialog view
-         */
-        mContent.addView(mCrossImage, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        addContentView(mContent, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        frameLayout.addView(content, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        frameLayout.setPadding(5, 5, 5, 5);
+        addContentView(frameLayout, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
     }
 
-    private void createCrossImage() {
-        mCrossImage = new ImageView(getContext());
-        // Dismiss the dialog when user click on the 'x'
-        mCrossImage.setOnClickListener(new View.OnClickListener() {
+    private void createCancelButton() {
+        buttonContainer = new LinearLayout(getContext());
+        buttonContainer.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        buttonContainer.setBackgroundColor(Color.LTGRAY);
+        buttonContainer.setPadding(5, 5, 5, 5);
+
+        cancelButton = new Button(getContext());
+        cancelButton.setText("Cancel");
+        cancelButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onCancel();
                 LoginDialog.this.dismiss();
             }
         });
-        Drawable crossDrawable = getContext().getResources().getDrawable(R.drawable.close);
-        mCrossImage.setImageDrawable(crossDrawable);
-        /* 'x' should not be visible while webview is loading
-         * make it visible only after webview has fully loaded
-        */
-        mCrossImage.setVisibility(View.INVISIBLE);
+
+        buttonContainer.addView(cancelButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        content.addView(buttonContainer);
+        buttonContainer.setVisibility(View.INVISIBLE);
     }
 
     private void setUpWebView(int margin) {
@@ -107,7 +105,7 @@ public class LoginDialog extends Dialog {
 
         webViewContainer.setPadding(margin, margin, margin, margin);
         webViewContainer.addView(mWebView);
-        mContent.addView(webViewContainer);
+        content.addView(webViewContainer, FILL);
     }
 
     private class FbWebViewClient extends WebViewClient {
@@ -153,13 +151,10 @@ public class LoginDialog extends Dialog {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             mSpinner.dismiss();
-            /*
-             * Once webview is fully loaded, set the mContent background to be transparent
-             * and make visible the 'x' image.
-             */
-            mContent.setBackgroundColor(Color.TRANSPARENT);
+
+            frameLayout.setBackgroundColor(Color.TRANSPARENT);
             mWebView.setVisibility(View.VISIBLE);
-            mCrossImage.setVisibility(View.VISIBLE);
+            buttonContainer.setVisibility(View.VISIBLE);
         }
     }
 
