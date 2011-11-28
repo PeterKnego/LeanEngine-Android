@@ -137,7 +137,7 @@ public class LeanQuery {
 
         private String operatorString;
 
-        static FilterOperator create(String jsonOperator) throws LeanException {
+        static FilterOperator create(String jsonOperator) {
             if("=".equals(jsonOperator)){
                 return FilterOperator.EQUAL;
             } else if(">".equals(jsonOperator)){
@@ -153,7 +153,7 @@ public class LeanQuery {
             } else if("IN".equals(jsonOperator)){
                 return FilterOperator.IN;
             }
-            throw new LeanException(LeanError.Error.UnsupportedQueryFilterOperation, jsonOperator);
+            throw new IllegalArgumentException("Unsupported query operator: '"+jsonOperator+"'");
         }
 
         FilterOperator( String operatorString) {
@@ -175,13 +175,13 @@ public class LeanQuery {
             this.sortString = sortString;
         }
 
-        public static SortDirection create(String sortJson) throws LeanException {
+        public static SortDirection create(String sortJson) {
             if ("asc".equals(sortJson)) {
                 return SortDirection.ASCENDING;
             } else if ("desc".equals(sortJson)) {
                 return SortDirection.DESCENDING;
             }
-            throw new LeanException(LeanError.Error.UnsupportedQuerySortOperation, sortJson);
+            throw new IllegalArgumentException("Unsupported sort operator: '"+sortJson+"'");
         }
 
         public String toJSON() {

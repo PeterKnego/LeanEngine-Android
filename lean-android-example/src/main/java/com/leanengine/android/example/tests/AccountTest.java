@@ -32,7 +32,7 @@ public class AccountTest extends TestCase {
             Assert.assertNotNull(currentAccount.getProviderProperties());
             Assert.assertTrue(!currentAccount.getProviderProperties().isEmpty());
         } catch (LeanException e) {
-            Log.e("AccountTest", "error:" + e.getError().getErrorCode() + " msg:" + e.getError().getErrorMessage());
+            Log.e("AccountTest", "error:" + e.getError().getDetailCode() + " msg:" + e.getError().getErrorMessage());
             Assert.assertTrue(false);
         }
     }

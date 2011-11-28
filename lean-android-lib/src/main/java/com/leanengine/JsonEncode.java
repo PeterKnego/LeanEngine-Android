@@ -30,7 +30,8 @@ public class JsonEncode {
             }
             return json;
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.CreatingJsonError, " \n\n" + e);
+            // this should not happen under normal circumstances
+            throw new IllegalStateException(e);
         }
     }
 
@@ -44,7 +45,8 @@ public class JsonEncode {
         try {
             rootNode.put("result", resultsArray);
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.CreatingJsonError, " \n\n" + e);
+            // this should not happen under normal circumstances
+            throw new IllegalStateException(e);
         }
         return rootNode;
     }
@@ -78,7 +80,8 @@ public class JsonEncode {
 
             return json;
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.CreatingJsonError, " \n\n" + e);
+            // this should not happen under normal circumstances
+            throw new IllegalStateException(e);
         }
     }
 

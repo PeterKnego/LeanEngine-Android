@@ -26,6 +26,9 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 public class LoginDialog extends Dialog {
 
     static final FrameLayout.LayoutParams FILL =
@@ -124,10 +127,15 @@ public class LoginDialog extends Dialog {
                     mListener.onSuccess();
                 } else {
                     String errorCode = query.getValue("errorcode");
-                    String errorMsg = query.getValue("errormsg");
+                    String errorMsg = null;
+                    try {
+                        errorMsg = URLDecoder.decode(query.getValue("errormsg"), "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        // should not happen - UTF-8 is always supported
+                    }
                     LoginDialog.this.dismiss();
-                    mListener.onError(new LeanError(LeanError.Error.FacebookAuthResponseError,
-                            " errorCode=" + errorCode + " errorMsg=" + errorMsg));
+                    mListener.onError(new LeanError(LeanError.Error.NotAuthorizedError,
+                            "Authorization error: error. errorCode=" + errorCode + " errorMsg=" + errorMsg));
                 }
                 return true;
             }
@@ -138,7 +146,7 @@ public class LoginDialog extends Dialog {
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
-            mListener.onError(new LeanError(LeanError.Error.FacebookAuthConnectError));
+            mListener.onError(new LeanError(LeanError.Error.ServerError, " Could not connect to Facebook authorization server."));
             LoginDialog.this.dismiss();
         }
 

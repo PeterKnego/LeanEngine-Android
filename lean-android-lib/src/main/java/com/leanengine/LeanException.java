@@ -18,7 +18,7 @@ public class LeanException extends IOException {
     private LeanError error;
     private String message;
 
-     public LeanException(LeanError leanError) {
+    public LeanException(LeanError leanError) {
         this.error = leanError;
     }
 
@@ -26,10 +26,10 @@ public class LeanException extends IOException {
         this.error = new LeanError(error);
     }
 
-     public LeanException(LeanError.Error error, String message) {
-         this.error = new LeanError(error);
-         this.message = message;
-     }
+    public LeanException(LeanError.Error error, String message) {
+        this.error = new LeanError(error);
+        this.message = message;
+    }
 
     public LeanError getError() {
         return error;
