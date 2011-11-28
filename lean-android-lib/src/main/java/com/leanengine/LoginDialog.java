@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.UrlQuerySanitizer;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -57,10 +58,11 @@ public class LoginDialog extends Dialog {
         content = new LinearLayout(getContext());
         content.setOrientation(LinearLayout.VERTICAL);
         content.setLayoutParams(FILL);
+        content.setBackgroundColor(Color.LTGRAY);
 
         createCancelButton();
 
-        setUpWebView(0);
+        setUpWebView(5);
 
         frameLayout.addView(content, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         frameLayout.setPadding(5, 5, 5, 5);
@@ -71,7 +73,8 @@ public class LoginDialog extends Dialog {
         buttonContainer = new LinearLayout(getContext());
         buttonContainer.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         buttonContainer.setBackgroundColor(Color.LTGRAY);
-        buttonContainer.setPadding(5, 5, 5, 5);
+        buttonContainer.setPadding(5, 5, 5, 0);
+        buttonContainer.setGravity(Gravity.CENTER_VERTICAL);
 
         cancelButton = new Button(getContext());
         cancelButton.setText("Cancel");
