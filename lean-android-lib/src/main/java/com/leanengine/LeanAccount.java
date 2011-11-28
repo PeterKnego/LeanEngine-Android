@@ -8,6 +8,8 @@
 
 package com.leanengine;
 
+import android.widget.ExpandableListAdapter;
+
 import java.util.Map;
 
 public class LeanAccount {
@@ -64,5 +66,13 @@ public class LeanAccount {
      */
     public static LeanAccount getAccountData() throws LeanException {
         return RestService.getCurrentAccountData();
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public Map<String, Object> getProviderProperties() {
+        return providerProperties;
     }
 }

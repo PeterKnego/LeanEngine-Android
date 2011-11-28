@@ -76,17 +76,17 @@ public class LeanError {
     private int errorCode;
     private String errorMessage;
 
-    private LeanError(int errorCode, String errorMessage) {
+    protected LeanError(int errorCode, String errorMessage) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }
 
-    public LeanError(Error error) {
+    protected LeanError(Error error) {
         this.errorCode = error.errorCode;
         this.errorMessage = error.errorMessage;
     }
 
-    public LeanError(Error error, String additionalMessage) {
+    protected LeanError(Error error, String additionalMessage) {
         this.errorCode = error.errorCode;
         this.errorMessage = error.errorMessage + additionalMessage;
     }

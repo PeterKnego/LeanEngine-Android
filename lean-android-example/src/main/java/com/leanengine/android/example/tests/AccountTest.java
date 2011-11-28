@@ -28,9 +28,9 @@ public class AccountTest extends TestCase {
         try {
             LeanAccount currentAccount = LeanAccount.getAccountData();
             Assert.assertNotNull(currentAccount);
-            Assert.assertNotNull(currentAccount.nickName);
-            Assert.assertNotNull(currentAccount.providerProperties);
-            Assert.assertTrue(!currentAccount.providerProperties.isEmpty());
+            Assert.assertNotNull(currentAccount.getNickName());
+            Assert.assertNotNull(currentAccount.getProviderProperties());
+            Assert.assertTrue(!currentAccount.getProviderProperties().isEmpty());
         } catch (LeanException e) {
             Log.e("AccountTest", "error:" + e.getError().getErrorCode() + " msg:" + e.getError().getErrorMessage());
             Assert.assertTrue(false);

@@ -14,9 +14,12 @@ import org.json.JSONObject;
 
 import java.util.*;
 
+/**
+ * Internal utility class
+ */
 public class JsonDecode {
 
-    protected static LeanAccount accountFromJson(JSONObject json) throws LeanException {
+    static LeanAccount accountFromJson(JSONObject json) throws LeanException {
 
         Long id;
         try {
@@ -73,7 +76,7 @@ public class JsonDecode {
     }
 
 
-    protected static LeanEntity[] entityListFromJson(JSONObject json) throws LeanException {
+    static LeanEntity[] entityListFromJson(JSONObject json) throws LeanException {
         try {
             JSONArray array = json.getJSONArray("result");
             LeanEntity[] result = new LeanEntity[array.length()];
@@ -87,7 +90,7 @@ public class JsonDecode {
         }
     }
 
-    protected static LeanEntity entityFromJson(JSONObject json) throws LeanException {
+    static LeanEntity entityFromJson(JSONObject json) throws LeanException {
 
         String kind;
         try {
@@ -120,7 +123,7 @@ public class JsonDecode {
 
     }
 
-    protected static Map<String, Object> entityPropertiesFromJson(JSONObject jsonNode) throws LeanException, JSONException {
+    static Map<String, Object> entityPropertiesFromJson(JSONObject jsonNode) throws LeanException, JSONException {
         Map<String, Object> props = new HashMap<String, Object>(jsonNode.length());
 
         // must have some properties
@@ -138,7 +141,7 @@ public class JsonDecode {
         return props;
     }
 
-    protected static Object propertyFromJson(Object jsonNode) throws LeanException, JSONException {
+    static Object propertyFromJson(Object jsonNode) throws LeanException, JSONException {
         if (jsonNode instanceof JSONObject) {
             return typedObjectFromJson((JSONObject) jsonNode);
         } else if (jsonNode instanceof JSONArray) {
@@ -200,77 +203,5 @@ public class JsonDecode {
             throw new LeanException(LeanError.Error.ValueToJSON, " Missing '" + fieldName + "' field.");
         }
     }
-
-
-//   public static LeanQuery fromJson( JSONObject jsonNode) throws LeanException {
-//
-//        // get the 'kind' of the query
-//        LeanQuery query = null;
-//        try {
-//            query = new LeanQuery(jsonNode.getString("kind"));
-//        } catch (JSONException e) {
-//            throw new LeanException(LeanError.Error.QueryJSON, " Missing 'kind' property.");
-//        }
-//
-//        // get 'filter'
-//        JSONObject filters;
-//        try {
-//            filters = jsonNode.getJSONObject("filter");
-//        } catch (JSONException e) {
-//            throw new LeanException(LeanError.Error.QueryJSON, " Property 'filter' must be a JSON object.");
-//        }
-//
-//        if (filters != null) {
-//            Iterator<String> filterIterator = filters.getFieldNames();
-//            while (filterIterator.hasNext()) {
-//                String filterProperty = filterIterator.next();
-//                JSONObject filter;
-//                try {
-//                    filter = filters.getJSONObject(filterProperty);
-//                } catch (JSONException cce) {
-//                    throw new LeanException(LeanError.Error.QueryJSON, " Filter value must be a JSON object.");
-//                }
-//                Iterator<String> operatorIterator = filter.getFieldNames();
-//                while (operatorIterator.hasNext()) {
-//                    String operator = operatorIterator.next();
-//                    Object filterValue = JsonDecode.propertyFromJson(filter.get(operator));
-//                    query.addFilter(
-//                            filterProperty,
-//                            QueryFilter.FilterOperator.create(operator),
-//                            filterValue);
-//                }
-//            }
-//        }
-//
-//        // get 'sort'
-//        ObjectNode sorts;
-//        try {
-//            sorts = (ObjectNode) jsonNode.get("sort");
-//        } catch (ClassCastException cce) {
-//            throw new LeanException(LeanException.Error.QueryJSON, " Property 'sort' must be a JSON object.");
-//        }
-//        if (sorts != null) {
-//            Iterator<String> sortIterator = sorts.getFieldNames();
-//            while (sortIterator.hasNext()) {
-//                String sortProperty = sortIterator.next();
-//                query.addSort(sortProperty, QuerySort.SortDirection.create(sorts.get(sortProperty).getTextValue()));
-//            }
-//        }
-//
-//        // get 'options'
-//        ObjectNode options;
-//        try {
-//            options = (ObjectNode) jsonNode.get("options");
-//        } catch (ClassCastException cce) {
-//            throw new LeanException(LeanException.Error.QueryJSON, " Property 'options' must be a JSON object.");
-//        }
-//        if (options != null) {
-//            query.setQueryOptions(QueryOptions.fromJson(options));
-//        }
-//
-//
-//        return query;
-//    }
-
 
 }

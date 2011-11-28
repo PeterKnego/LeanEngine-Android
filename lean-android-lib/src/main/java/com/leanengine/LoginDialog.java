@@ -27,8 +27,6 @@ import android.widget.LinearLayout;
 
 public class LoginDialog extends Dialog {
 
-    static final int FB_BLUE = 0xFF6D84B4;
-
     static final FrameLayout.LayoutParams FILL =
             new FrameLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
                     ViewGroup.LayoutParams.FILL_PARENT);
