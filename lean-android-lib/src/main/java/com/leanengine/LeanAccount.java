@@ -28,6 +28,7 @@ public class LeanAccount {
 
     /**
      * Logs user out of server. Current authentication tokens are removed on server and on client.
+     *
      * @return Returns true if user was logged in and was logged out successfully.
      * @throws LeanException
      */
@@ -38,6 +39,7 @@ public class LeanAccount {
     /**
      * Logs user out of server. Current authentication tokens are removed on server and on client.
      * Runs on the background thread.
+     *
      * @param callback Callback to be invoked when logout finishes.
      * @throws LeanException
      */
@@ -47,18 +49,20 @@ public class LeanAccount {
 
     /**
      * Checks if user is logged in.
+     *
      * @return Returns true if user is logged in, false otherwise.
      */
-    public static boolean isTokenAvailable() {
+    public static boolean isUserLoggedIn() {
         return LeanEngine.getAuthToken() != null;
     }
 
     /**
      * Gets current user account.
+     *
      * @return LeanAccount of the currently logged-in user.
      * @throws LeanException
      */
-    public static LeanAccount checkCurrentAccountIsValid() throws LeanException {
+    public static LeanAccount getAccountData() throws LeanException {
         return RestService.getCurrentAccountData();
     }
 }

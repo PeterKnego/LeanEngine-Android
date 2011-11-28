@@ -59,7 +59,7 @@ public class RestService {
     }
 
     protected static LeanEntity getPrivateEntity(final String kind, final Long id) throws LeanException, IllegalArgumentException {
-        if (!LeanAccount.isTokenAvailable())
+        if (!LeanAccount.isUserLoggedIn())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url;
@@ -111,7 +111,7 @@ public class RestService {
 
 
     public static void deletePrivateEntity(String kind, Long id) throws LeanException {
-        if (!LeanAccount.isTokenAvailable())
+        if (!LeanAccount.isUserLoggedIn())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url;
@@ -163,7 +163,7 @@ public class RestService {
     }
 
     protected static LeanEntity[] getPrivateEntities(final String kind) throws LeanException {
-        if (!LeanAccount.isTokenAvailable())
+        if (!LeanAccount.isUserLoggedIn())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url;
@@ -215,7 +215,7 @@ public class RestService {
     }
 
     protected static long putPrivateEntity(final LeanEntity entity) throws LeanException {
-        if (!LeanAccount.isTokenAvailable())
+        if (!LeanAccount.isUserLoggedIn())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
         //todo externalize URLs (and token insertion)
         String url = LeanEngine.getHostURI() +
@@ -261,7 +261,7 @@ public class RestService {
     }
 
     protected static LeanEntity[] queryPrivate(final LeanQuery query) throws LeanException {
-        if (!LeanAccount.isTokenAvailable())
+        if (!LeanAccount.isUserLoggedIn())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url = LeanEngine.getHostURI() +
@@ -313,7 +313,7 @@ public class RestService {
     }
 
     protected static Boolean logout() throws LeanException {
-        if (!LeanAccount.isTokenAvailable())
+        if (!LeanAccount.isUserLoggedIn())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url = LeanEngine.getHostURI() +
@@ -363,7 +363,7 @@ public class RestService {
     }
 
     public static LeanAccount getCurrentAccountData() throws LeanException {
-        if (!LeanAccount.isTokenAvailable())
+        if (!LeanAccount.isUserLoggedIn())
             throw new LeanException(LeanError.Error.NoAccountAuthorized);
 
         String url = LeanEngine.getHostURI() +

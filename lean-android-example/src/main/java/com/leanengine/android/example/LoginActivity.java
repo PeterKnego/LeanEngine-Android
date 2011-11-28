@@ -185,7 +185,7 @@ public class LoginActivity extends Activity {
 
     private void checkLogin() {
 
-        if (LeanAccount.isTokenAvailable()) {
+        if (LeanAccount.isUserLoggedIn()) {
             setContentView(R.layout.logout_layout);
             enableLogoutButton();
             MainTabWidget tabHost = (MainTabWidget) getParent();

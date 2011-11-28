@@ -53,7 +53,8 @@ public class LeanEngine {
      * This token is internally saved in app preferences and survives app restarts.
      * <br/><br/>
      * It is used to authenticate against server.
-     * Token might be expired - this can be checked via {@link com.leanengine.LeanAccount#checkCurrentAccountIsValid()}.
+     * Token might be expired - this can be checked via {@link com.leanengine.LeanAccount#getAccountData()}.
+     *
      * @return Authentication token as provided by server when authentication procedure is successfully completed.
      */
     public static String getAuthToken() {
@@ -62,6 +63,7 @@ public class LeanEngine {
 
     /**
      * Saves authentication token to app preferences.
+     *
      * @param authToken Authentication token acquired via authentication flow.
      */
     protected static void saveAuthData(String authToken) {
