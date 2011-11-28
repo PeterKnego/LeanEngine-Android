@@ -5,8 +5,11 @@
 */*.iml
 */*.ipr
 */*.iws
+out/
 lean-android-lib/default.properties
 lean-android-lib/target/
+lean-android-lib/out/
 lean-android-example/default.properties
 lean-android-example/target/
+lean-android-example/out/
 .DS_Store
