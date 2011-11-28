@@ -11,6 +11,8 @@ package com.leanengine;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 
 /**
  * Main LeanEngine application context class, containing application-wide (singletons) data.
@@ -121,6 +123,12 @@ public class LeanEngine {
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove("_auth_token");
         editor.commit();
+    }
+
+    protected static void clearCookies() {
+        CookieSyncManager.createInstance(getAppContext());
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.removeAllCookie();
     }
 
     private static String loadAuthToken() {

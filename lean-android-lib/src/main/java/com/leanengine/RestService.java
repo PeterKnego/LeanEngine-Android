@@ -326,6 +326,7 @@ public class RestService {
 
             // after the request is made we must also clear local data
             LeanEngine.resetAuthToken();
+            LeanEngine.clearCookies();
             return result;
         } catch (IOException e) {
             throw new LeanException(LeanError.Error.ServerNotAccessible);
