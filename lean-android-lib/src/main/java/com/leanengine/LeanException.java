@@ -16,26 +16,25 @@ import java.io.IOException;
 public class LeanException extends IOException {
 
     private LeanError error;
-    private String message;
 
-    public LeanException(LeanError leanError) {
+    LeanException(LeanError leanError) {
         this.error = leanError;
     }
 
-    public LeanException(LeanError.Error error) {
-        this.error = new LeanError(error);
+    LeanException(LeanError.Type type) {
+        this.error = new LeanError(type);
     }
 
-    public LeanException(LeanError.Error error, String message) {
-        this.error = new LeanError(error);
-        this.message = message;
+    LeanException(LeanError.Type type, String message) {
+        this.error = new LeanError(type, message);
     }
 
+    /**
+     * Returns the wrapped {@link LeanError}.
+     *
+     * @return The {@link LeanError} that this exception is wrapping.
+     */
     public LeanError getError() {
         return error;
-    }
-
-    public String getMessage() {
-        return message;
     }
 }

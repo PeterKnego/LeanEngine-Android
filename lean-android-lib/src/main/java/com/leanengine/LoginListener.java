@@ -8,18 +8,25 @@
 
 package com.leanengine;
 
+/**
+ * A listener interface used during authentication process.
+ */
 public interface LoginListener {
 
+    /**
+     * User successfully authenticated.
+     */
     public void onSuccess();
 
+    /**
+     * User cancelled authentication procedure.
+     */
     public void onCancel();
 
 
     /**
-     * Called when lofgin error happens.
-     * Error codes depend on provider:
-     * Facebook: http://developers.facebook.com/docs/oauth/errors/
-     * Twitter:
+     * An authentication error happened.
+     * @param error A {@link LeanError} containing detailed error code and description of error.
      */
     public void onError(LeanError error);
 

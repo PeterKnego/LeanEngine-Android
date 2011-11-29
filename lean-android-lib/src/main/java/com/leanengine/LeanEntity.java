@@ -31,11 +31,11 @@ public class LeanEntity {
     protected Long accountID;
     protected Map<String, Object> properties = new HashMap<String, Object>();
 
-    protected LeanEntity(String kind) {
+    LeanEntity(String kind) {
         this.kind = kind;
     }
 
-    protected LeanEntity(String kind, long id, long accountID) {
+    LeanEntity(String kind, long id, long accountID) {
         this.kind = kind;
         this.id = id;
         this.accountID = accountID;

@@ -25,7 +25,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class RestService {
+class RestService {
 
     private static JSONObject doGet(String uri) throws IOException {
         HttpClient httpclient = new DefaultHttpClient();
@@ -60,7 +60,7 @@ public class RestService {
 
     protected static LeanEntity getPrivateEntity(final String kind, final Long id) throws LeanException, IllegalArgumentException {
         if (!LeanAccount.isUserLoggedIn())
-            throw new LeanException(LeanError.Error.NotAuthorizedError);
+            throw new LeanException(LeanError.Type.NotAuthorizedError);
 
         String url;
         if (kind != null && id != null) {
@@ -75,7 +75,7 @@ public class RestService {
             JSONObject jsonObject = doGet(url);
             return JsonDecode.entityFromJson(jsonObject);
         } catch (IOException e) {
-            throw new LeanException(LeanError.Error.NetworkError);
+            throw new LeanException(LeanError.Type.NetworkError);
         }
     }
 
@@ -112,7 +112,7 @@ public class RestService {
 
     public static void deletePrivateEntity(String kind, Long id) throws LeanException {
         if (!LeanAccount.isUserLoggedIn())
-            throw new LeanException(LeanError.Error.NotAuthorizedError);
+            throw new LeanException(LeanError.Type.NotAuthorizedError);
 
         String url;
         if (kind != null && id != null) {
@@ -126,7 +126,7 @@ public class RestService {
         try {
             doDelete(url);
         } catch (IOException e) {
-            throw new LeanException(LeanError.Error.NetworkError);
+            throw new LeanException(LeanError.Type.NetworkError);
         }
     }
 
@@ -164,7 +164,7 @@ public class RestService {
 
     protected static LeanEntity[] getPrivateEntities(final String kind) throws LeanException {
         if (!LeanAccount.isUserLoggedIn())
-            throw new LeanException(LeanError.Error.NotAuthorizedError);
+            throw new LeanException(LeanError.Type.NotAuthorizedError);
 
         String url;
         if (kind != null) {
@@ -181,7 +181,7 @@ public class RestService {
             JSONObject jsonObject = doGet(url);
             return JsonDecode.entityListFromJson(jsonObject);
         } catch (IOException e) {
-            throw new LeanException(LeanError.Error.NetworkError);
+            throw new LeanException(LeanError.Type.NetworkError);
         }
     }
 
@@ -216,7 +216,7 @@ public class RestService {
 
     protected static long putPrivateEntity(final LeanEntity entity) throws LeanException {
         if (!LeanAccount.isUserLoggedIn())
-            throw new LeanException(LeanError.Error.NotAuthorizedError);
+            throw new LeanException(LeanError.Type.NotAuthorizedError);
         //todo externalize URLs (and token insertion)
         String url = LeanEngine.getHostURI() +
                 "/rest/v1/entity/" + entity.kind + "?lean_token=" +
@@ -226,7 +226,7 @@ public class RestService {
             JSONObject jsonObject = doPost(url, param);
             return idFromJson(jsonObject);
         } catch (IOException e) {
-            throw new LeanException(LeanError.Error.NetworkError);
+            throw new LeanException(LeanError.Type.NetworkError);
         }
     }
 
@@ -260,7 +260,7 @@ public class RestService {
 
     protected static LeanEntity[] queryPrivate(final LeanQuery query) throws LeanException {
         if (!LeanAccount.isUserLoggedIn())
-            throw new LeanException(LeanError.Error.NotAuthorizedError);
+            throw new LeanException(LeanError.Type.NotAuthorizedError);
 
         String url = LeanEngine.getHostURI() +
                 "/rest/v1/query?lean_token=" +
@@ -277,7 +277,7 @@ public class RestService {
 
             return JsonDecode.entityListFromJson(jsonObject);
         } catch (IOException e) {
-            throw new LeanException(LeanError.Error.NetworkError);
+            throw new LeanException(LeanError.Type.NetworkError);
         }
     }
 
@@ -312,7 +312,7 @@ public class RestService {
 
     protected static Boolean logout() throws LeanException {
         if (!LeanAccount.isUserLoggedIn())
-            throw new LeanException(LeanError.Error.NotAuthorizedError);
+            throw new LeanException(LeanError.Type.NotAuthorizedError);
 
         String url = LeanEngine.getHostURI() +
                 "/rest/v1/public/logout?lean_token=" +
@@ -327,7 +327,7 @@ public class RestService {
             LeanEngine.clearCookies();
             return result;
         } catch (IOException e) {
-            throw new LeanException(LeanError.Error.NetworkError);
+            throw new LeanException(LeanError.Type.NetworkError);
         }
     }
 
@@ -361,7 +361,7 @@ public class RestService {
 
     public static LeanAccount getCurrentAccountData() throws LeanException {
         if (!LeanAccount.isUserLoggedIn())
-            throw new LeanException(LeanError.Error.NotAuthorizedError);
+            throw new LeanException(LeanError.Type.NotAuthorizedError);
 
         String url = LeanEngine.getHostURI() +
                 "/rest/v1/public/account?lean_token=" +
@@ -371,7 +371,7 @@ public class RestService {
             JSONObject jsonObject = doGet(url);
             return JsonDecode.accountFromJson(jsonObject);
         } catch (IOException e) {
-            throw new LeanException(LeanError.Error.NetworkError);
+            throw new LeanException(LeanError.Type.NetworkError);
         }
     }
 
@@ -418,7 +418,7 @@ public class RestService {
             try {
                 result = entity != null ? EntityUtils.toString(entity, "UTF-8") : null;
             } catch (IOException e) {
-                throw new LeanException(LeanError.Error.NetworkError);
+                throw new LeanException(LeanError.Type.NetworkError);
             }
 
             if (statusLine.getStatusCode() >= 300) {
@@ -429,10 +429,10 @@ public class RestService {
                 try {
                     return new JSONObject(result);
                 } catch (JSONException e) {
-                    throw new LeanException(LeanError.Error.ServerError, "Malformed JSON reply: " + e.getMessage());
+                    throw new LeanException(LeanError.Type.ServerError, "Malformed JSON reply: " + e.getMessage());
                 }
             } else {
-                throw new LeanException(LeanError.Error.ServerError, "Malformed JSON reply.");
+                throw new LeanException(LeanError.Type.ServerError, "Malformed JSON reply.");
             }
         }
     }
@@ -444,7 +444,7 @@ public class RestService {
             StatusLine statusLine = response.getStatusLine();
 
             if (statusLine.getStatusCode() >= 300) {
-                throw new LeanException(LeanError.Error.ServerError);
+                throw new LeanException(LeanError.Type.ServerError);
             }
 
             return null;
@@ -456,7 +456,7 @@ public class RestService {
         try {
             return json.getLong("id");
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ServerError, "Malformed JSON reply: missing field 'id'.");
+            throw new LeanException(LeanError.Type.ServerError, "Malformed JSON reply: missing field 'id'.");
         }
     }
 
@@ -464,7 +464,7 @@ public class RestService {
         try {
             return json.getBoolean("result");
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ServerError, "Malformed JSON reply: missing field 'result'.");
+            throw new LeanException(LeanError.Type.ServerError, "Malformed JSON reply: missing field 'result'.");
         }
     }
 }

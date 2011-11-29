@@ -14,6 +14,10 @@ public class LeanText {
         this.value = value;
     }
 
+    /**
+     * Returns the wrapped {@code String} value.
+     * @return The wrapped value.
+     */
     public String getValue() {
         return value;
     }

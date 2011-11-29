@@ -29,6 +29,9 @@ import android.widget.LinearLayout;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
+/**
+ * A subclass of {@link Dialog} for performing login procedure against various authentication providers.
+ */
 public class LoginDialog extends Dialog {
 
     static final FrameLayout.LayoutParams FILL =
@@ -43,6 +46,14 @@ public class LoginDialog extends Dialog {
     private LinearLayout content;
     private LinearLayout buttonContainer;
 
+    /**
+     * Constructs a LoginDialog.
+     * @param context Activity context.
+     * @param url URL of the authentication service. URLs are provided by {@link LeanEngine#getFacebookLoginUri()},
+     * {@link com.leanengine.LeanEngine#getGoogleLoginUri()}, etc..
+     * @param listener {@link LoginListener} that will be invoked when authentication procedure finishes or in case
+     * of errors.
+     */
     public LoginDialog(Context context, String url, LoginListener listener) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
         mUrl = url;
@@ -101,7 +112,7 @@ public class LoginDialog extends Dialog {
         mWebView = new WebView(getContext());
         mWebView.setVerticalScrollBarEnabled(false);
         mWebView.setHorizontalScrollBarEnabled(false);
-        mWebView.setWebViewClient(new LoginDialog.FbWebViewClient());
+        mWebView.setWebViewClient(new InternalWebViewClient());
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.loadUrl(mUrl);
         mWebView.setLayoutParams(FILL);
@@ -112,7 +123,7 @@ public class LoginDialog extends Dialog {
         content.addView(webViewContainer, FILL);
     }
 
-    private class FbWebViewClient extends WebViewClient {
+    private class InternalWebViewClient extends WebViewClient {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -134,7 +145,7 @@ public class LoginDialog extends Dialog {
                         // should not happen - UTF-8 is always supported
                     }
                     LoginDialog.this.dismiss();
-                    mListener.onError(new LeanError(LeanError.Error.NotAuthorizedError,
+                    mListener.onError(new LeanError(LeanError.Type.NotAuthorizedError,
                             "Authorization error: error. errorCode=" + errorCode + " errorMsg=" + errorMsg));
                 }
                 return true;
@@ -146,7 +157,7 @@ public class LoginDialog extends Dialog {
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
-            mListener.onError(new LeanError(LeanError.Error.ServerError, " Could not connect to Facebook authorization server."));
+            mListener.onError(new LeanError(LeanError.Type.ServerError, " Could not connect to Facebook authorization server."));
             LoginDialog.this.dismiss();
         }
 

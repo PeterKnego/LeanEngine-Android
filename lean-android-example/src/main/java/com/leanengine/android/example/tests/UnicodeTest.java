@@ -38,7 +38,7 @@ public class UnicodeTest extends TestCase {
             entitiyID = testEntity.save();
             Log.d("UnicodeTest", "Created entity: " + entityName + "[" + entitiyID + "]");
         } catch (LeanException e) {
-            Log.e("UnicodeTest", "Error creating entity:" + e.getError().getDetailCode() + " msg:" + e.getError().getErrorMessage());
+            Log.e("UnicodeTest", "Error creating entity:" + e.getError().getErrorCode() + " msg:" + e.getError().getErrorMessage());
             Assert.assertTrue(false);
             return;
         }
@@ -51,7 +51,7 @@ public class UnicodeTest extends TestCase {
         try {
             testEntity = LeanEntity.get(entityName, entitiyID);
         } catch (LeanException e) {
-            Log.e("UnicodeTest", "Error loading entity:" + e.getError().getDetailCode() + " msg:" + e.getError().getErrorMessage());
+            Log.e("UnicodeTest", "Error loading entity:" + e.getError().getErrorCode() + " msg:" + e.getError().getErrorMessage());
             Assert.assertTrue(false);
             return;
         }
@@ -70,7 +70,7 @@ public class UnicodeTest extends TestCase {
             LeanEntity.delete(entityName, entitiyID);
             Log.d("UnicodeTest", "Deleted entity: " + entityName + "[" + entitiyID + "]");
         } catch (LeanException e) {
-            Log.e("UnicodeTest", "Error deleting entity:" + e.getError().getDetailCode() + " msg:" + e.getError().getErrorMessage());
+            Log.e("UnicodeTest", "Error deleting entity:" + e.getError().getErrorCode() + " msg:" + e.getError().getErrorMessage());
             Assert.assertTrue(false);
             return;
         }

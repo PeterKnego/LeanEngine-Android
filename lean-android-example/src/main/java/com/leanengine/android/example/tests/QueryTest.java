@@ -47,7 +47,7 @@ public class QueryTest extends TestCase {
                 entitiyIDs.add(entitiyID);  // save ID of the entity
                 Log.d("QueryTest", "Created entity: " + entityName + "[" + entitiyID + "]");
             } catch (LeanException e) {
-                Log.e("QueryTest", "Error creating entity:" + e.getError().getDetailCode() + " msg:" + e.getError().getErrorMessage());
+                Log.e("QueryTest", "Error creating entity:" + e.getError().getErrorCode() + " msg:" + e.getError().getErrorMessage());
                 Assert.assertTrue(false);
                 return;
             }
@@ -66,7 +66,7 @@ public class QueryTest extends TestCase {
         try {
             result = query.fetch();
         } catch (LeanException e) {
-            Log.e("QueryTest", "Query error:" + e.getError().getDetailCode() + " msg:" + e.getError().getErrorMessage());
+            Log.e("QueryTest", "Query error:" + e.getError().getErrorCode() + " msg:" + e.getError().getErrorMessage());
             Assert.assertTrue(false);
             return;
         }
@@ -76,7 +76,7 @@ public class QueryTest extends TestCase {
         try {
             result = query.fetchNext();
         } catch (LeanException e) {
-            Log.e("QueryTest", "Query error:" + e.getError().getDetailCode() + " msg:" + e.getError().getErrorMessage());
+            Log.e("QueryTest", "Query error:" + e.getError().getErrorCode() + " msg:" + e.getError().getErrorMessage());
             Assert.assertTrue(false);
             return;
         }
@@ -90,7 +90,7 @@ public class QueryTest extends TestCase {
                 LeanEntity.delete(entityName, entitiyID);
                 Log.d("QueryTest", "Deleted entity: " + entityName + "[" + entitiyID + "]");
             } catch (LeanException e) {
-                Log.e("QueryTest", "Error deleting entity:" + e.getError().getDetailCode() + " msg:" + e.getError().getErrorMessage());
+                Log.e("QueryTest", "Error deleting entity:" + e.getError().getErrorCode() + " msg:" + e.getError().getErrorMessage());
                 Assert.assertTrue(false);
                 return;
             }

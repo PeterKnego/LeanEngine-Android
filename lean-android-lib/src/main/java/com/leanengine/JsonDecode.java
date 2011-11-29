@@ -15,7 +15,7 @@ import org.json.JSONObject;
 import java.util.*;
 
 /**
- * Internal utility class
+ * Internal utility class for decoding REST messages.
  */
 public class JsonDecode {
 
@@ -25,28 +25,28 @@ public class JsonDecode {
         try {
             id = json.getLong("id");
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ServerError, "Malformed reply: Entity JSON missing field 'id'.");
+            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Entity JSON missing field 'id'.");
         }
 
         String providerId;
         try {
             providerId = json.getString("providerId");
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ServerError, "Malformed reply: Entity JSON missing field 'providerId'.");
+            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Entity JSON missing field 'providerId'.");
         }
 
         String nickName;
         try {
             nickName = json.getString("nickName");
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ServerError, "Malformed reply: Entity JSON missing field 'nickName'.");
+            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Entity JSON missing field 'nickName'.");
         }
 
         String provider;
         try {
             provider = json.getString("provider");
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ServerError, "Malformed reply: Entity JSON missing field 'provider'.");
+            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Entity JSON missing field 'provider'.");
         }
 
         JSONObject jsonProviderProperties;
@@ -56,7 +56,7 @@ public class JsonDecode {
             providerProperties = accountPropsFromJson(jsonProviderProperties);
             return new LeanAccount(id, nickName, providerId, provider, providerProperties);
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ServerError, "Malformed reply: Entity JSON missing field 'providerProperties'.");
+            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Entity JSON missing field 'providerProperties'.");
         }
     }
 
@@ -64,7 +64,7 @@ public class JsonDecode {
         Map<String, Object> props = new HashMap<String, Object>(jsonNode.length());
 
         // must have some properties
-        if (jsonNode.length() == 0) throw new LeanException(LeanError.Error.ServerError,
+        if (jsonNode.length() == 0) throw new LeanException(LeanError.Type.ServerError,
                 "Malformed reply: JSON parameter 'providerProperties' must not be empty.");
 
         Iterator fieldNames = jsonNode.keys();
@@ -86,7 +86,7 @@ public class JsonDecode {
             }
             return result;
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ServerError, "Malformed reply: " + e);
+            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: " + e);
         }
     }
 
@@ -96,19 +96,19 @@ public class JsonDecode {
         try {
             kind = json.getString("_kind");
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ServerError, "Malformed reply: Entity JSON missing field '_kind'.");
+            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Entity JSON missing field '_kind'.");
         }
         Long id;
         try {
             id = json.getLong("_id");
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ServerError, "Malformed reply: Entity JSON missing field '_id'.");
+            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Entity JSON missing field '_id'.");
         }
         Long accountId;
         try {
             accountId = json.getLong("_account");
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ServerError, "Malformed reply: Entity JSON missing field '_account'.");
+            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Entity JSON missing field '_account'.");
         }
 
         LeanEntity entity = new LeanEntity(kind, id, accountId);
@@ -116,7 +116,7 @@ public class JsonDecode {
         try {
             entity.properties = entityPropertiesFromJson(json);
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ServerError, "Malformed reply: " + e);
+            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: " + e);
         }
 
         return entity;
@@ -127,7 +127,7 @@ public class JsonDecode {
         Map<String, Object> props = new HashMap<String, Object>(jsonNode.length());
 
         // must have some properties
-        if (jsonNode.length() == 0) throw new LeanException(LeanError.Error.ServerError, "Empty reply.");
+        if (jsonNode.length() == 0) throw new LeanException(LeanError.Type.ServerError, "Empty reply.");
 
         Iterator fieldNames = jsonNode.keys();
         while (fieldNames.hasNext()) {
@@ -166,7 +166,7 @@ public class JsonDecode {
     private static Object typedObjectFromJson(JSONObject node) throws LeanException, JSONException {
         // must have 'type' field
         String type = node.getString("type");
-        if (type == null) throw new LeanException(LeanError.Error.ServerError, "Malformed reply: Missing 'type' field.");
+        if (type == null) throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Missing 'type' field.");
 
         if ("date".equals(type)) {
             return new Date(getLongFromValueNode("value", node));
@@ -184,7 +184,7 @@ public class JsonDecode {
             throw new IllegalArgumentException("Value nodes of type 'reference' are not yet implemented.");
         } else {
             //unknown node type
-            throw new LeanException(LeanError.Error.ServerError, "Malformed reply: Unknown type '" + type + "'.");
+            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Unknown type '" + type + "'.");
         }
     }
 
@@ -192,7 +192,7 @@ public class JsonDecode {
         try {
             return node.getLong(fieldName);
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ServerError, "Malformed reply: Missing '" + fieldName + "' field.");
+            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Missing '" + fieldName + "' field.");
         }
     }
 
@@ -200,7 +200,7 @@ public class JsonDecode {
         try {
             return node.getString(fieldName);
         } catch (JSONException e) {
-            throw new LeanException(LeanError.Error.ServerError, "Malformed reply: Missing '" + fieldName + "' field.");
+            throw new LeanException(LeanError.Type.ServerError, "Malformed reply: Missing '" + fieldName + "' field.");
         }
     }
 

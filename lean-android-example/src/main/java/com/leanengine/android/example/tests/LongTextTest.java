@@ -61,7 +61,7 @@ public class LongTextTest extends TestCase {
             entitiyID = testEntity.save();
             Log.d("LongTextTest", "Created entity: " + entityName + "[" + entitiyID + "]");
         } catch (LeanException e) {
-            Log.e("LongTextTest", "Error creating entity:" + e.getError().getDetailCode() + " msg:" + e.getError().getErrorMessage());
+            Log.e("LongTextTest", "Error creating entity:" + e.getError().getErrorCode() + " msg:" + e.getError().getErrorMessage());
             Assert.assertTrue(false);
             return;
         }
@@ -74,7 +74,7 @@ public class LongTextTest extends TestCase {
         try {
             testEntity = LeanEntity.get(entityName, entitiyID);
         } catch (LeanException e) {
-            Log.e("LongTextTest", "Error loading entity:" + e.getError().getDetailCode() + " msg:" + e.getError().getErrorMessage());
+            Log.e("LongTextTest", "Error loading entity:" + e.getError().getErrorCode() + " msg:" + e.getError().getErrorMessage());
             Assert.assertTrue(false);
             return;
         }
@@ -89,7 +89,7 @@ public class LongTextTest extends TestCase {
             LeanEntity.delete(entityName, entitiyID);
             Log.d("LongTextTest", "Deleted entity: " + entityName + "[" + entitiyID + "]");
         } catch (LeanException e) {
-            Log.e("LongTextTest", "Error deleting entity:" + e.getError().getDetailCode() + " msg:" + e.getError().getErrorMessage());
+            Log.e("LongTextTest", "Error deleting entity:" + e.getError().getErrorCode() + " msg:" + e.getError().getErrorMessage());
             Assert.assertTrue(false);
             return;
         }

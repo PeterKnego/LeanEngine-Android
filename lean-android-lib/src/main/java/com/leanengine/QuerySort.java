@@ -8,19 +8,32 @@
 
 package com.leanengine;
 
+/**
+ * A holder class containing query sort properties.
+ */
 public class QuerySort {
     private String property;
     private LeanQuery.SortDirection direction;
 
-    public QuerySort(String property, LeanQuery.SortDirection direction) {
+    QuerySort(String property, LeanQuery.SortDirection direction) {
         this.property = property;
         this.direction = direction;
     }
 
+    /**
+     * Returns the name of the property the query sorts on.
+     *
+     * @return Name of the property the query sorts on.
+     */
     public String getProperty() {
         return property;
     }
 
+    /**
+     * Returns the sort direction.
+     *
+     * @return {@link LeanQuery.SortDirection}
+     */
     public LeanQuery.SortDirection getDirection() {
         return direction;
     }

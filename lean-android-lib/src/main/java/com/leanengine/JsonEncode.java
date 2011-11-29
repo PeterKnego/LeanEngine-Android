@@ -16,9 +16,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Internal utility class for encoding REST messages.
+ */
 public class JsonEncode {
 
-    protected static JSONObject entityToJson(LeanEntity entity) throws LeanException {
+    static JSONObject entityToJson(LeanEntity entity) throws LeanException {
         try {
             JSONObject json = new JSONObject();
             if (entity.id != null)
@@ -35,7 +38,7 @@ public class JsonEncode {
         }
     }
 
-    protected static JSONObject entityListToJson(List<LeanEntity> entityList) throws LeanException {
+    static JSONObject entityListToJson(List<LeanEntity> entityList) throws LeanException {
         JSONObject rootNode = new JSONObject();
         JSONArray resultsArray = new JSONArray();
 
@@ -51,7 +54,7 @@ public class JsonEncode {
         return rootNode;
     }
 
-    protected static JSONObject queryToJson(LeanQuery query) throws LeanException {
+    static JSONObject queryToJson(LeanQuery query) throws LeanException {
         JSONObject json = new JSONObject();
         try {
             json.put("kind", query.getKind());
@@ -85,7 +88,7 @@ public class JsonEncode {
         }
     }
 
-    protected static void addTypedNode(JSONObject node, String key, Object value) throws LeanException, JSONException {
+    static void addTypedNode(JSONObject node, String key, Object value) throws LeanException, JSONException {
         if (value instanceof List) {
             List list = (List) value;
             JSONArray arrayNode = new JSONArray();
