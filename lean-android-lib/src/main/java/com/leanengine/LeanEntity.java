@@ -61,7 +61,7 @@ public class LeanEntity {
      * @param callback NetworkCallback that on success returns ID of the saved Entity.
      */
     public void saveInBackground(NetworkCallback<Long> callback) {
-        RestService.putPrivateEntityAsync(this, callback);
+        RestService.getInstance().putPrivateEntityAsync(this, callback);
     }
 
     /**
@@ -73,7 +73,7 @@ public class LeanEntity {
      * @throws LeanException In case of authentication, network and data parsing errors.
      */
     public long save() throws LeanException {
-        return RestService.putPrivateEntity(this);
+        return RestService.getInstance().putPrivateEntity(this);
     }
 
     /**
@@ -89,7 +89,7 @@ public class LeanEntity {
      * parsing errors.
      */
     public static LeanEntity get(String kind, long id) throws LeanException, IllegalArgumentException {
-        return RestService.getPrivateEntity(kind, id);
+        return RestService.getInstance().getPrivateEntity(kind, id);
     }
 
     /**
@@ -102,7 +102,7 @@ public class LeanEntity {
      * @param callback Callback to be invoked in case of result or error.
      */
     public static void getInBackground(String kind, long id, NetworkCallback<LeanEntity> callback) {
-        RestService.getPrivateEntityAsync(kind, id, callback);
+        RestService.getInstance().getPrivateEntityAsync(kind, id, callback);
     }
 
     /**
@@ -114,7 +114,7 @@ public class LeanEntity {
      * @param callback Callback to be invoked in case of result or error.
      */
     public static void getAllInBackground(String kind, NetworkCallback<LeanEntity> callback) {
-        RestService.getPrivateEntitiesAsync(kind, callback);
+        RestService.getInstance().getPrivateEntitiesAsync(kind, callback);
     }
 
     /**
@@ -127,7 +127,7 @@ public class LeanEntity {
      * @throws LeanException In case of authentication, network and data parsing errors.
      */
     public static LeanEntity[] getAll(String kind) throws LeanException {
-        return RestService.getPrivateEntities(kind);
+        return RestService.getInstance().getPrivateEntities(kind);
     }
 
     /**
@@ -138,11 +138,11 @@ public class LeanEntity {
      * @throws LeanException In case of authentication, network and data parsing errors.
      */
     public static void delete(String kind, long entityId) throws LeanException {
-        RestService.deletePrivateEntity(kind, entityId);
+        RestService.getInstance().deletePrivateEntity(kind, entityId);
     }
 
     public void delete() throws LeanException {
-        RestService.deletePrivateEntity(this.kind, this.id);
+        RestService.getInstance().deletePrivateEntity(this.kind, this.id);
     }
 
     /**
