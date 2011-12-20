@@ -17,8 +17,15 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,38 +34,84 @@ import java.io.IOException;
 
 class RestService {
 
-    private static JSONObject doGet(String uri) throws IOException {
-        HttpClient httpclient = new DefaultHttpClient();
+    private static RestService INSTANCE = new RestService();
+    
+    private volatile HttpClient client;
+    private Configuration configuration = new Configuration(); // default
 
+    public static RestService getInstance() {
+        return INSTANCE;
+    }
+
+    private HttpClient getClient() {
+        if (client == null) {
+            synchronized (this) {
+                if (client == null) {
+                    if (configuration != null) {
+                        final HttpParams params = new BasicHttpParams();
+                        HttpConnectionParams.setConnectionTimeout(params, configuration.getConnectionTimeout());
+                        HttpProtocolParams.setVersion(params, configuration.getHttpVersion());
+                        HttpProtocolParams.setContentCharset(params, configuration.getContentCharset());
+
+                        final SchemeRegistry schemeRegistry = new SchemeRegistry();
+                        schemeRegistry.register(new Scheme("http", configuration.getPlainFactory(), configuration.getPort()));
+                        schemeRegistry.register(new Scheme("https", configuration.getSslFactory(), configuration.getSslPort()));
+
+                        final ClientConnectionManager ccm = configuration.createClientConnectionManager(params, schemeRegistry);
+
+                        client = configuration.createClient(ccm, params);
+                    } else {
+                        client = new DefaultHttpClient();
+                    }
+                }
+            }
+        }
+        return client;
+    }
+
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
+    /**
+     * Dispose http client / its connection manager once done.
+     */
+    public void dispose() {
+        final HttpClient temp = client;
+        client = null;
+        if (temp != null) {
+            final ClientConnectionManager manager = temp.getConnectionManager();
+            if (manager != null)
+                manager.shutdown();
+        }
+    }
+    
+    private JSONObject doGet(String uri) throws IOException {
         HttpGet httpget = new HttpGet(uri);
         httpget.addHeader("Accept", "application/json");
         httpget.addHeader("Accept-Charset", "UTF-8");
 
-        return httpclient.execute(httpget, new RestResponseHandler());
+        return getClient().execute(httpget, new RestResponseHandler());
     }
 
-    private static JSONObject doPost(String uri, JSONObject json) throws IOException {
-        HttpClient httpclient = new DefaultHttpClient();
-
+    private JSONObject doPost(String uri, JSONObject json) throws IOException {
         HttpPost httpPost = new HttpPost(uri);
         httpPost.addHeader("Accept", "application/json");
         httpPost.addHeader("Accept-Charset", "UTF-8");
         httpPost.addHeader("Content-Type", "application/json");
         httpPost.setEntity(new StringEntity(json.toString(), "UTF-8"));
 
-        return httpclient.execute(httpPost, new RestResponseHandler());
+        return getClient().execute(httpPost, new RestResponseHandler());
     }
 
-    private static void doDelete(String uri) throws IOException {
-        HttpClient httpclient = new DefaultHttpClient();
-
+    private void doDelete(String uri) throws IOException {
         HttpDelete httpget = new HttpDelete(uri);
         httpget.addHeader("Content-Type", "application/json");
 
-        httpclient.execute(httpget, new DeleteResponseHandler());
+        getClient().execute(httpget, new DeleteResponseHandler());
     }
 
-    protected static LeanEntity getPrivateEntity(final String kind, final Long id) throws LeanException, IllegalArgumentException {
+    protected LeanEntity getPrivateEntity(final String kind, final Long id) throws LeanException, IllegalArgumentException {
         if (!LeanAccount.isUserLoggedIn())
             throw new LeanException(LeanError.Type.NotAuthorizedError);
 
@@ -79,7 +132,7 @@ class RestService {
         }
     }
 
-    protected static void getPrivateEntityAsync(final String kind, final long id,
+    protected void getPrivateEntityAsync(final String kind, final long id,
                                                 final NetworkCallback<LeanEntity> networkCallback) {
 
         final RestAsyncTask<LeanEntity[]> aTask = new RestAsyncTask<LeanEntity[]>() {
@@ -110,7 +163,7 @@ class RestService {
     }
 
 
-    public static void deletePrivateEntity(String kind, Long id) throws LeanException {
+    public void deletePrivateEntity(String kind, Long id) throws LeanException {
         if (!LeanAccount.isUserLoggedIn())
             throw new LeanException(LeanError.Type.NotAuthorizedError);
 
@@ -130,7 +183,7 @@ class RestService {
         }
     }
 
-    public static void deletePrivateEntityAsync(final String kind, final long id, final NetworkCallback<Void> networkCallback)
+    public void deletePrivateEntityAsync(final String kind, final long id, final NetworkCallback<Void> networkCallback)
             throws LeanException {
 
         final RestAsyncTask<Void> aTask = new RestAsyncTask<Void>() {
@@ -162,7 +215,7 @@ class RestService {
 
     }
 
-    protected static LeanEntity[] getPrivateEntities(final String kind) throws LeanException {
+    protected LeanEntity[] getPrivateEntities(final String kind) throws LeanException {
         if (!LeanAccount.isUserLoggedIn())
             throw new LeanException(LeanError.Type.NotAuthorizedError);
 
@@ -185,7 +238,7 @@ class RestService {
         }
     }
 
-    protected static void getPrivateEntitiesAsync(final String kind, final NetworkCallback<LeanEntity> networkCallback) {
+    protected void getPrivateEntitiesAsync(final String kind, final NetworkCallback<LeanEntity> networkCallback) {
 
         final RestAsyncTask<LeanEntity[]> aTask = new RestAsyncTask<LeanEntity[]>() {
 
@@ -214,7 +267,7 @@ class RestService {
         aTask.execute((Void) null);
     }
 
-    protected static long putPrivateEntity(final LeanEntity entity) throws LeanException {
+    protected long putPrivateEntity(final LeanEntity entity) throws LeanException {
         if (!LeanAccount.isUserLoggedIn())
             throw new LeanException(LeanError.Type.NotAuthorizedError);
         //todo externalize URLs (and token insertion)
@@ -230,7 +283,7 @@ class RestService {
         }
     }
 
-    protected static void putPrivateEntityAsync(final LeanEntity entity, final NetworkCallback<Long> networkCallback) {
+    protected void putPrivateEntityAsync(final LeanEntity entity, final NetworkCallback<Long> networkCallback) {
         RestAsyncTask<Long> aTask = new RestAsyncTask<Long>() {
 
             // executes on background thread
@@ -258,7 +311,7 @@ class RestService {
         aTask.execute((Void) null);
     }
 
-    protected static LeanEntity[] queryPrivate(final LeanQuery query) throws LeanException {
+    protected LeanEntity[] queryPrivate(final LeanQuery query) throws LeanException {
         if (!LeanAccount.isUserLoggedIn())
             throw new LeanException(LeanError.Type.NotAuthorizedError);
 
@@ -281,7 +334,7 @@ class RestService {
         }
     }
 
-    protected static void queryPrivateAsync(final LeanQuery query, final NetworkCallback<LeanEntity> networkCallback) {
+    protected void queryPrivateAsync(final LeanQuery query, final NetworkCallback<LeanEntity> networkCallback) {
 
         final RestAsyncTask<LeanEntity[]> aTask = new RestAsyncTask<LeanEntity[]>() {
 
@@ -310,7 +363,7 @@ class RestService {
         aTask.execute((Void) null);
     }
 
-    protected static Boolean logout() throws LeanException {
+    protected Boolean logout() throws LeanException {
         if (!LeanAccount.isUserLoggedIn())
             throw new LeanException(LeanError.Type.NotAuthorizedError);
 
@@ -331,7 +384,7 @@ class RestService {
         }
     }
 
-    public static void logoutAsync(final NetworkCallback<Boolean> callback) {
+    public void logoutAsync(final NetworkCallback<Boolean> callback) {
         final RestAsyncTask<Boolean[]> aTask = new RestAsyncTask<Boolean[]>() {
 
             // executes on background thread
@@ -359,7 +412,7 @@ class RestService {
         aTask.execute((Void) null);
     }
 
-    public static LeanAccount getCurrentAccountData() throws LeanException {
+    public LeanAccount getCurrentAccountData() throws LeanException {
         if (!LeanAccount.isUserLoggedIn())
             throw new LeanException(LeanError.Type.NotAuthorizedError);
 
@@ -375,7 +428,7 @@ class RestService {
         }
     }
 
-    public static void getCurrentAccountDataAsync(final NetworkCallback<LeanAccount> networkCallback) throws LeanException {
+    public void getCurrentAccountDataAsync(final NetworkCallback<LeanAccount> networkCallback) throws LeanException {
         final RestAsyncTask<LeanAccount[]> aTask = new RestAsyncTask<LeanAccount[]>() {
 
             // executes on background thread
@@ -450,7 +503,6 @@ class RestService {
             return null;
         }
     }
-
 
     private static Long idFromJson(JSONObject json) throws LeanException {
         try {

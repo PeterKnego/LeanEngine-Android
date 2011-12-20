@@ -45,7 +45,7 @@ public class LeanQuery {
     public void fetchInBackground(NetworkCallback<LeanEntity> callback) {
         // this is initial fetch, reset the cursor
         cursor = null;
-        RestService.queryPrivateAsync(this, callback);
+        RestService.getInstance().queryPrivateAsync(this, callback);
     }
 
     /**
@@ -61,7 +61,7 @@ public class LeanQuery {
     public void fetchNextInBackground(NetworkCallback<LeanEntity> callback) throws IllegalStateException {
         if (cursor == null)
             throw new IllegalStateException("This method can be only called after method 'fetch()' or 'fetchInBackground(..)' is executed.");
-        RestService.queryPrivateAsync(this, callback);
+        RestService.getInstance().queryPrivateAsync(this, callback);
     }
 
     /**
@@ -79,7 +79,7 @@ public class LeanQuery {
     public LeanEntity[] fetch() throws LeanException {
         // this is initial fetch, reset the cursor
         cursor = null;
-        return RestService.queryPrivate(this);
+        return RestService.getInstance().queryPrivate(this);
     }
 
     /**
@@ -96,7 +96,7 @@ public class LeanQuery {
     public LeanEntity[] fetchNext() throws LeanException {
         if (cursor == null)
             throw new IllegalStateException("This method can be only called after method 'fetch()' or 'fetchInBackground(..)' is executed.");
-        return RestService.queryPrivate(this);
+        return RestService.getInstance().queryPrivate(this);
     }
 
     String getCursor() {

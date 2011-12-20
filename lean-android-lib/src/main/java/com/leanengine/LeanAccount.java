@@ -33,7 +33,7 @@ public class LeanAccount {
      * @throws LeanException
      */
     public static Boolean logout() throws LeanException {
-        return RestService.logout();
+        return RestService.getInstance().logout();
     }
 
     /**
@@ -44,7 +44,7 @@ public class LeanAccount {
      * @throws LeanException
      */
     public static void logoutInBackground(NetworkCallback<Boolean> callback) {
-        RestService.logoutAsync(callback);
+        RestService.getInstance().logoutAsync(callback);
     }
 
     /**
@@ -63,7 +63,7 @@ public class LeanAccount {
      * @throws LeanException
      */
     public static LeanAccount getAccountData() throws LeanException {
-        return RestService.getCurrentAccountData();
+        return RestService.getInstance().getCurrentAccountData();
     }
 
 
