@@ -3,7 +3,7 @@
           package="com.leanengine.android.lib"
           android:versionCode="1"
           android:versionName="1.0">
-    <application android:label="@string/app_name" android:icon="@drawable/icon">
+    <application >
 
     </application>
 </manifest> 
